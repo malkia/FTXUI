@@ -1,7 +1,9 @@
 // Copyright 2023 Arthur Sonzogni. All rights reserved.
 // Use of this source code is governed by the MIT license that can be found in
 // the LICENSE file.
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #include <algorithm>
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/component_base.hpp>

@@ -4,9 +4,9 @@ build --experimental_convenience_symlinks=clean
 # Enable automatic --config selection based on the current platform (e.g. on Windows --config=windows is implied, on Linux --config=linux, etc.)
 common --enable_platform_specific_config
 
-# Enable C++17 for Windows compilers: MSVC and LLVM's clang-cl
-# For gcc/clang you need it slightly different - `-std=c++17`
-build:windows --cxxopt="/std:c++17"
+# Enable C++20 for Windows compilers: MSVC and LLVM's clang-cl
+# For gcc/clang you need it slightly different - `-std=c++20`
+build:windows --cxxopt="/std:c++20"
 
 build:windows --cxxopt="/W3"
 build:windows --cxxopt="/WX"
