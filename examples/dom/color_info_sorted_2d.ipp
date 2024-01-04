@@ -49,5 +49,5 @@ std::vector<std::vector<ftxui::ColorInfo>> ColorInfoSorted2D() {
     }
   }
 
-  return std::move(info_columns);
+  return info_columns;
 }

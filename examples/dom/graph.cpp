@@ -48,7 +48,7 @@ int main() {
   Graph my_graph;
 
   std::string reset_position;
-  for (int i = 0;; ++i) {
+  for (;;) {
     auto document = hbox({
         vbox({
             graph(std::ref(my_graph)),
