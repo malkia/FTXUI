@@ -16,7 +16,7 @@ namespace ftxui {
 TEST(ColorTest, API_default) {
   LinearGradient gradient;
   EXPECT_EQ(gradient.angle, 0);
-  EXPECT_EQ(gradient.stops.size(), 0);
+  EXPECT_EQ(gradient.stops.size(), 0ULL);
 }
 
 TEST(ColorTest, API_builder) {
@@ -26,7 +26,7 @@ TEST(ColorTest, API_builder) {
                       .Stop(Color::RedLight, 0.5)
                       .Stop(Color::RedLight);
   EXPECT_EQ(gradient.angle, 45);
-  EXPECT_EQ(gradient.stops.size(), 3);
+  EXPECT_EQ(gradient.stops.size(), 3ULL);
   EXPECT_EQ(gradient.stops[0].color, Color::Red);
   EXPECT_EQ(gradient.stops[0].position, std::nullopt);
   EXPECT_EQ(gradient.stops[1].color, Color::RedLight);
@@ -38,7 +38,7 @@ TEST(ColorTest, API_builder) {
 TEST(ColorTest, API_constructor_bicolor) {
   auto gradient = LinearGradient(Color::Red, Color::RedLight);
   EXPECT_EQ(gradient.angle, 0);
-  EXPECT_EQ(gradient.stops.size(), 2);
+  EXPECT_EQ(gradient.stops.size(), 2ULL);
   EXPECT_EQ(gradient.stops[0].color, Color::Red);
   EXPECT_EQ(gradient.stops[0].position, std::nullopt);
   EXPECT_EQ(gradient.stops[1].color, Color::RedLight);
@@ -48,7 +48,7 @@ TEST(ColorTest, API_constructor_bicolor) {
 TEST(ColorTest, API_constructor_bicolor_angle) {
   auto gradient = LinearGradient(45, Color::Red, Color::RedLight);
   EXPECT_EQ(gradient.angle, 45);
-  EXPECT_EQ(gradient.stops.size(), 2);
+  EXPECT_EQ(gradient.stops.size(), 2ULL);
   EXPECT_EQ(gradient.stops[0].color, Color::Red);
   EXPECT_EQ(gradient.stops[0].position, std::nullopt);
   EXPECT_EQ(gradient.stops[1].color, Color::RedLight);

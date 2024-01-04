@@ -7,6 +7,11 @@
 !.clang-format
 !.clang-tidy
 !.gitignore
+!.bazelignore
+!.bazelrc
+!.bazelversion
+!MODULE.bazel
+!BUILD.bazel
 !CHANGELOG.md
 !CMakeLists.txt
 !LICENSE
@@ -44,14 +49,17 @@
 !examples/**/*.mjs
 !examples/**/*.py
 !examples/**/*.txt
+!examples/**/BUILD.bazel
 
 # include directory:
 !include/ftxui/**/*.hpp
 !include/ftxui/**/*.cpp
+!include/**/BUILD.bazel
 
 # src directory:
 !src/ftxui/**/*.hpp
 !src/ftxui/**/*.cpp
+!src/**/BUILD.bazel
 
 # tools directory:
 !tools/**/*.sh

@@ -1,0 +1,14 @@
+load("@bazel_skylib//lib:paths.bzl", "paths")
+
+cc_library(
+    name = "color_info_sorted_2d_ipp",
+    hdrs = ["color_info_sorted_2d.ipp"],
+    deps = ["//include:screen"],
+    visibility = ["//visibility:public"],
+)
+
+[cc_binary(
+    name = paths.replace_extension(name, ""),
+    srcs = [name],
+    deps = ["//src:dom", "//src:screen", ":color_info_sorted_2d_ipp"],
+) for (name) in glob(["*.cpp"])]

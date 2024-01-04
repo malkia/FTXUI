@@ -4,19 +4,28 @@ build --experimental_convenience_symlinks=clean
 # Enable automatic --config selection based on the current platform (e.g. on Windows --config=windows is implied, on Linux --config=linux, etc.)
 common --enable_platform_specific_config
 
+startup --windows_enable_symlinks
+
 # Enable C++20 for Windows compilers: MSVC and LLVM's clang-cl
 # For gcc/clang you need it slightly different - `-std=c++20`
 build:windows --cxxopt="/std:c++20"
 build:linux   --cxxopt="-std=c++20"
+build:osx     --cxxopt="-std=c++20"
 
-build:windows --cxxopt="/W3"
+build:windows --cxxopt="/W4"
 build:windows --cxxopt="/WX"
+
+# examples/component/canvas_animated.cpp(173): warning C4244: '=': conversion from 'double' to '_Ty', possible loss of data ... with [ _Ty = float ]
 build:windows --cxxopt="/wd4244"
+
+# src/ftxui/screen/screen.cpp(564): warning C4267: 'return': conversion from 'size_t' to 'uint8_t', possible loss of data
 build:windows --cxxopt="/wd4267"
-build:windows --cxxopt="/wd4305"
-build:windows --cxxopt="/D_CRT_SECURE_NO_WARNINGS"
+
+# googletest\include\gtest/gtest.h(1379): warning C4389: '==': signed/unsigned mismatch
+# src/ftxui/dom/canvas_test.cpp(104): note: see reference to function template instantiation 'testing::AssertionResult testing::internal::EqHelper::Compare<uint32_t,int,0x0>(const char *,const char *,const T1 &,const T2 &)' being compiled
+build:windows --cxxopt="/wd4389"
+
 build:windows --cxxopt="/DUNICODE"
-build:windows --cxxopt="/D_UNICODE"
 build:windows --cxxopt="/DFTXUI_MICROSOFT_TERMINAL_FALLBACK"
 
 # Allow LLVM's clang-cl to be used as compiler on Windows.
@@ -27,6 +36,10 @@ common:windows-clang-cl --cxxopt="-Wno-unused-const-variable"
 
 # Use plain characters when doing "bazel mod graph"
 mod:windows --charset=ascii
+
+# Don't generate MODULE.bazel.lock file for now
+# https://bazel.build/reference/command-line-reference#flag--lockfile_mode
+common --lockfile_mode=off
 
 # This is optinal, and machine dependent. Bazel would only try to import this, and ignore it if it fails.
 #

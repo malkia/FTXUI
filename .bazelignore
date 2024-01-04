@@ -1,0 +1,11 @@
+# This is to support CLion's intellij plugin
+.bazelrc
+.bazelignore
+.gitignore
+MODULE.bazel
+.clwb
+bazel-bin
+bazel-genfiles
+bazel-out
+bazel-testlogs
+bazel-FTXUI

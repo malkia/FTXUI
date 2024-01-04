@@ -1,0 +1,32 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "screen",
+    strip_include_prefix = "ftxui",
+    include_prefix = "ftxui",
+    hdrs = glob(["ftxui/screen/*.hpp"]), 
+)
+
+cc_library(
+    name = "util",
+    strip_include_prefix = "ftxui",
+    include_prefix = "ftxui",
+    hdrs = glob(["ftxui/util/*.hpp"]), 
+    deps = [":screen"],
+)
+
+cc_library(
+    name = "dom",
+    strip_include_prefix = "ftxui",
+    include_prefix = "ftxui",
+    hdrs = glob(["ftxui/dom/*.hpp"]), 
+    deps = [":screen", ":util"],
+)
+
+cc_library(
+    name = "component",
+    strip_include_prefix = "ftxui",
+    include_prefix = "ftxui",
+    hdrs = glob(["ftxui/component/*.hpp"]), 
+    deps = [":dom", ":screen", ":util"],
+)

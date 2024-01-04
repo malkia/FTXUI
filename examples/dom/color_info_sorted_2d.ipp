@@ -35,7 +35,7 @@ std::vector<std::vector<ftxui::ColorInfo>> ColorInfoSorted2D() {
     for (int i = 0; i < int(column.size()) - 1; ++i) {
       int best_index = i + 1;
       int best_distance = 255 * 255 * 3;
-      for (int j = i + 1; j < column.size(); ++j) {
+      for (int j = i + 1; j < int(column.size()); ++j) {
         int dx = column[i].red - column[j].red;
         int dy = column[i].green - column[j].green;
         int dz = column[i].blue - column[j].blue;

@@ -56,7 +56,7 @@ Component ModalComponent(std::function<void()> do_nothing,
   return component;
 }
 
-int main(int argc, const char* argv[]) {
+int main(int, const char*[]) {
   auto screen = ScreenInteractive::TerminalOutput();
 
   // State of the application:
