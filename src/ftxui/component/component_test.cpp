@@ -1,5 +1,6 @@
 #include <gtest/gtest-message.h>    // for Message
 #include <gtest/gtest-test-part.h>  // for TestPartResult
+#include <gtest/gtest.h>
 #include <memory>  // for shared_ptr, __shared_ptr_access, allocator, make_shared
 
 #include "ftxui/component/captured_mouse.hpp"  // for ftxui

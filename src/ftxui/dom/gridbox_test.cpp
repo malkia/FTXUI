@@ -1,5 +1,6 @@
 #include <gtest/gtest-message.h>  // for Message
 #include <gtest/gtest-test-part.h>  // for SuiteApiResolver, TestFactoryImpl, TestPartResult
+#include <gtest/gtest.h>
 #include <algorithm>                // for remove
 #include <string>                   // for allocator, basic_string, string
 #include <vector>                   // for vector

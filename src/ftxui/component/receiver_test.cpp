@@ -1,5 +1,6 @@
 #include <gtest/gtest-message.h>    // for Message
 #include <gtest/gtest-test-part.h>  // for TestPartResult
+#include <gtest/gtest.h>
 #include <thread>                   // for thread
 #include <utility>                  // for move
 

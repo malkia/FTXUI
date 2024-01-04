@@ -1,0 +1,157 @@
+cc_library(
+    name = "screen_api",
+    strip_include_prefix = "include",
+    hdrs = glob(["include/ftxui/screen/*.hpp"]), 
+)
+
+cc_library(
+    name = "util_api",
+    strip_include_prefix = "include",
+    hdrs = glob(["include/ftxui/util/*.hpp"]), 
+    deps = [":screen_api"],
+)
+
+cc_library(
+    name = "dom_api",
+    strip_include_prefix = "include",
+    hdrs = glob(["include/ftxui/dom/*.hpp"]), 
+    deps = [":screen_api", ":util_api"],
+)
+
+cc_library(
+    name = "component_api",
+    strip_include_prefix = "include",
+    hdrs = glob(["include/ftxui/component/*.hpp"]), 
+    deps = [":dom_api", ":screen_api", ":util_api"],
+)
+
+cc_library(
+    name = "screen_lib",
+    strip_include_prefix = "src",
+    hdrs = glob(["src/ftxui/screen/*.hpp"]),
+    srcs = glob(["src/ftxui/screen/*.cpp", ], exclude=["src/ftxui/screen/*_test.cpp"]), 
+    deps = [":screen_api", ":util_api"],
+)
+
+cc_library(
+    name = "dom_lib",
+    strip_include_prefix = "src",
+    hdrs = glob(["src/ftxui/dom/*.hpp"]),
+    srcs = glob(["src/ftxui/dom/*.cpp"], exclude=["src/ftxui/dom/*_test.cpp"]), 
+    deps = [":dom_api"],
+)
+
+cc_test(
+    name = "dom_benchmarks",
+    srcs = ["src/ftxui/dom/benchmark_test.cpp"],
+    deps = [":dom_lib", ":screen_lib", "@google_benchmark//:benchmark_main"],
+    # This benchmark is too slow for regular runs, hence marked as manual.
+    # https://bazel.build/reference/test-encyclopedia#tag-conventions
+    # manual -> don't include test target in wildcard target patterns like :..., :*, or :all
+    tags = ["manual"],
+)
+
+cc_test(
+    name = "dom_tests",
+    srcs = glob(["src/ftxui/dom/*_test.cpp"], exclude=["src/ftxui/dom/benchmark_test.cpp"]),
+    deps = [":dom_lib", ":screen_lib", "@googletest//:gtest_main"],
+)
+
+cc_library(
+    name = "component_lib",
+    strip_include_prefix = "src",
+    hdrs = glob(["src/ftxui/component/*.hpp"]),
+    srcs = glob(["src/ftxui/component/*.cpp"], exclude=["src/ftxui/component/*_test.cpp", "src/ftxui/component/*_fuzzer.cpp"]), 
+    deps = [":component_api", ":screen_lib"],
+)
+
+cc_test(
+    name = "component_tests",
+    srcs = glob(["src/ftxui/component/*_test.cpp"], exclude=["src/ftxui/dom/terminal_input_parser_test_fuzzer.cpp"]),
+    deps = [":component_lib", ":dom_lib", ":screen_lib", "@googletest//:gtest_main"],
+)
+
+[cc_binary(
+    name = "dom_" + name + "_example",
+    srcs = ["examples/dom/" + name + ".cpp", "examples/dom/color_info_sorted_2d.ipp"],
+    deps = [":dom_lib", ":screen_lib"],
+) for (name) in [
+    "border",
+    "border_style",
+    "canvas",
+    "color_gallery",
+    "color_info_palette256",
+    "color_truecolor_HSV",
+    "color_truecolor_RGB",
+    "dbox",
+    "gauge",
+    "graph",
+    "gridbox",
+    "hflow",
+    "html_like",
+    "package_manager",
+    "paragraph",
+    "separator",
+    "separator_style",
+    "size",
+    "spinner",
+    "style_blink",
+    "style_bold",
+    "style_color",
+    "style_dim",
+    "style_gallery",
+    "style_inverted",
+    "style_underlined",
+    "table",
+    "vbox_hbox",
+    "vflow",
+    "window",
+]]
+
+[cc_binary(
+    name = "component_" + name + "_example",
+    srcs = ["examples/component/" + name + ".cpp"],
+    deps = [":component_lib", ":dom_lib", ":screen_lib"],
+) for (name) in [
+    "button",
+    "canvas_animated",
+    "checkbox",
+    "checkbox_in_frame",
+    "collapsible",
+    "composition",
+    "dropdown",
+    "flexbox_gallery",
+    "focus",
+    "gallery",
+    "homescreen",
+    "input",
+    "maybe",
+    "menu",
+    "menu2",
+    "menu_entries",
+    "menu_in_frame",
+    "menu_multiple",
+    "menu_style",
+    "modal_dialog",
+    "nested_screen",
+    "print_key_press",
+    "radiobox",
+    "radiobox_in_frame",
+    "renderer",
+    "resizable_split",
+    "slider",
+    "slider_rgb",
+    "tab_horizontal",
+    "tab_vertical",
+    "toggle",
+]]
+
+# LLVM's clang-cl support
+platform(
+    name = "x64_windows-clang-cl",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:windows",
+        "@bazel_tools//tools/cpp:clang-cl",
+    ],
+)

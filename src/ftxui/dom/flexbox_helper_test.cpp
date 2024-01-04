@@ -1,5 +1,6 @@
 #include <gtest/gtest-message.h>  // for Message
 #include <gtest/gtest-test-part.h>  // for TestPartResult, SuiteApiResolver, TestFactoryImpl
+#include <gtest/gtest.h>
 #include <memory>                   // for allocator_traits<>::value_type
 
 #include "ftxui/dom/flexbox_helper.hpp"

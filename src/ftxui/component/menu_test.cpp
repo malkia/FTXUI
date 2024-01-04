@@ -1,5 +1,6 @@
 #include <gtest/gtest-message.h>  // for Message
 #include <gtest/gtest-test-part.h>  // for TestPartResult, SuiteApiResolver, TestFactoryImpl
+#include <gtest/gtest.h>
 #include <memory>  // for allocator, __shared_ptr_access, shared_ptr
 #include <string>  // for string, basic_string
 #include <vector>  // for vector

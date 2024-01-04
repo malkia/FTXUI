@@ -1,5 +1,6 @@
 #include <gtest/gtest-message.h>  // for Message
 #include <gtest/gtest-test-part.h>  // for SuiteApiResolver, TestFactoryImpl, TestPartResult
+#include <gtest/gtest.h>
 #include <memory>                   // for allocator
 
 #include "ftxui/dom/elements.hpp"  // for LIGHT, flex, center, EMPTY, DOUBLE

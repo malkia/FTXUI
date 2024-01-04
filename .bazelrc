@@ -1,0 +1,38 @@
+# Simply my preference - e.g. don't create extra "bazel", "bazel-bin" folders in this folder.
+build --experimental_convenience_symlinks=clean
+
+# Enable automatic --config selection based on the current platform (e.g. on Windows --config=windows is implied, on Linux --config=linux, etc.)
+common --enable_platform_specific_config
+
+# Enable C++17 for Windows compilers: MSVC and LLVM's clang-cl
+# For gcc/clang you need it slightly different - `-std=c++17`
+build:windows --cxxopt="/std:c++17"
+
+build:windows --cxxopt="/W3"
+build:windows --cxxopt="/WX"
+build:windows --cxxopt="/wd4244"
+build:windows --cxxopt="/wd4267"
+build:windows --cxxopt="/wd4305"
+build:windows --cxxopt="/D_CRT_SECURE_NO_WARNINGS"
+build:windows --cxxopt="/DUNICODE"
+build:windows --cxxopt="/D_UNICODE"
+build:windows --cxxopt="/DFTXUI_MICROSOFT_TERMINAL_FALLBACK"
+
+# Allow LLVM's clang-cl to be used as compiler on Windows.
+# Simply add --config=windows-clang-cl on the command-line and it'll enable it.
+# The extra_execution_platforms is defined in the BUILD.bazel
+common:windows-clang-cl --extra_execution_platforms=//:x64_windows-clang-cl --extra_toolchains=@local_config_cc//:cc-toolchain-x64_windows-clang-cl
+common:windows-clang-cl --cxxopt="-Wno-unused-const-variable"
+
+# Use plain characters when doing "bazel mod graph"
+mod:windows --charset=ascii
+
+# This is optinal, and machine dependent. Bazel would only try to import this, and ignore it if it fails.
+#
+# My ../top.bazelrc has this inside:
+#
+#  build --disk_cache=f:/b/d
+#  common --repository_cache=f:/b/r
+#  startup --output_user_root=f:/b/u
+# 
+try-import %workspace%/../top.bazelrc

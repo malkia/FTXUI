@@ -1,0 +1,19 @@
+name: bazel
+
+on:
+  push:
+    branches:
+      - main
+      
+jobs:
+  windows_msvc:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - run: bazel test ...
+  windows_clang_cl:
+    runs-on: windows-latest
+    steps:
+      - run: choco upgrade llvm
+      - uses: actions/checkout@v4.1.1
+      - run: bazel test --config=windows-clang-cl ...
