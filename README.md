@@ -1,74 +1,73 @@
 <p align="center">
-  <img src="./examples/component/homescreen.gif" alt="Demo image"></img>
+  <img src="https://github.com/ArthurSonzogni/FTXUI/assets/4759106/6925b6da-0a7e-49d9-883c-c890e1f36007" alt="Demo image"></img>
   <br/>
   <a href="#"><img src="https://img.shields.io/badge/c++-%2300599C.svg?style=flat&logo=c%2B%2B&logoColor=white"></img></a>
   <a href="http://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/arthursonzogni/FTXUI?color=black"></img></a>
   <a href="#"><img src="https://img.shields.io/github/stars/ArthurSonzogni/FTXUI"></img></a>
   <a href="#"><img src="https://img.shields.io/github/forks/ArthurSonzogni/FTXUI"></img></a>
   <a href="#"><img src="https://img.shields.io/github/repo-size/ArthurSonzogni/FTXUI"></img></a>
-  <a href="https://github.com/ArthurSonzogni/FTXUI/issues"><img src="https://img.shields.io/github/issues/ArthurSonzogni/FTXUI"></img></a>
   <a href="https://github.com/ArthurSonzogni/FTXUI/graphs/contributors"><img src="https://img.shields.io/github/contributors/arthursonzogni/FTXUI?color=blue"></img></a>
+  <br/>
+  <a href="https://github.com/ArthurSonzogni/FTXUI/issues"><img src="https://img.shields.io/github/issues/ArthurSonzogni/FTXUI"></img></a>
+  <a href="https://repology.org/project/ftxui/versions"><img src="https://repology.org/badge/latest-versions/ftxui.svg" alt="latest packaged version(s)"></a>
+  <a href="https://codecov.io/gh/ArthurSonzogni/FTXUI">
+    <img src="https://codecov.io/gh/ArthurSonzogni/FTXUI/branch/master/graph/badge.svg?token=C41FdRpNVA"/>
+  </a>
+
   
   <br/>
   <a href="https://arthursonzogni.github.io/FTXUI/">Documentation</a> ·
-  <a href="https://github.com/ArthurSonzogni/FTXUI/issues">Report Bug</a> ·
+  <a href="https://github.com/ArthurSonzogni/FTXUI/issues">Report a Bug</a> ·
   <a href="https://arthursonzogni.github.io/FTXUI/examples.html">Examples</a> .
   <a href="https://github.com/ArthurSonzogni/FTXUI/issues">Request Feature</a> ·
   <a href="https://github.com/ArthurSonzogni/FTXUI/pulls">Send a Pull Request</a>
 
 </p>
 
-## FTXUI
+# FTXUI
 
 <i>Functional Terminal (X) User interface</i>
 
-A simple C++ library for terminal based user interface.
+A simple cross-platform C++ library for terminal based user interfaces!
 
 ## Feature
  * Functional style. Inspired by
    [[1]](https://hackernoon.com/building-reactive-terminal-interfaces-in-c-d392ce34e649?gi=d9fb9ce35901)
    and [React](https://reactjs.org/)
- * Simple and elegant syntax (in my opinion).
- * Support for [UTF8](https://en.wikipedia.org/wiki/UTF-8) and [fullwidth chars](https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms) (→ 测试).
- * No dependencies.
- * Cross platform. Linux/mac (main target), Windows (experimental thanks to contributors), WebAssembly.
+ * Simple and elegant syntax (in my opinion)
  * Keyboard & mouse navigation.
-
-## Operating systems
-
-- Webassembly
-- Linux
-- MacOS
-- Windows
-
-## Example
-~~~cpp
-  vbox({
-    hbox({
-      text("left") | border,
-      text("middle") | border | flex,
-      text("right") | border,
-    }),
-    gauge(0.5) | border,
-  });
-~~~
-
-~~~bash
-┌────┐┌───────────────────────────────────────────────────────────────┐┌─────┐
-│left││middle                                                         ││right│
-└────┘└───────────────────────────────────────────────────────────────┘└─────┘
-┌────────────────────────────────────────────────────────────────────────────┐
-│██████████████████████████████████████                                      │
-└────────────────────────────────────────────────────────────────────────────┘
-~~~
+ * Support for [UTF8](https://en.wikipedia.org/wiki/UTF-8) and [fullwidth chars](https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms) (→ 测试)
+ * Support for animations. [Demo 1](https://arthursonzogni.github.io/FTXUI/examples/?file=component/menu_underline_animated_gallery), [Demo 2](https://arthursonzogni.github.io/FTXUI/examples/?file=component/button_style)
+ * Support for drawing. [Demo](https://arthursonzogni.github.io/FTXUI/examples/?file=component/canvas_animated)
+ * No dependencies
+ * **Cross platform**: Linux/MacOS (main target), WebAssembly, Windows (Thanks to contributors!).
+ * Learn by [examples](#documentation), and [tutorials](#documentation)
+ * Multiple packages: CMake [FetchContent]([https://bewagner.net/programming/2020/05/02/cmake-fetchcontent/](https://cmake.org/cmake/help/latest/module/FetchContent.html)) (preferred), vcpkg, pkgbuild, conan.
+ * Good practises: documentation, tests, fuzzers, performance tests, automated CI, automated packaging, etc...
 
 ## Documentation
 
 - [Starter example project](https://github.com/ArthurSonzogni/ftxui-starter)
 - [Documentation](https://arthursonzogni.github.io/FTXUI/)
-- [Examples (WebAssembly)](https://arthursonzogni.com/FTXUI/examples/)
-- [Build using CMake](https://arthursonzogni.com/FTXUI/doc/#build-using-cmake)
-- [Build using nxxm](https://arthursonzogni.com/FTXUI/doc/#build-using-cmake)
+- [Examples (WebAssembly)](https://arthursonzogni.github.io/FTXUI/examples/)
+- [Build using CMake](https://arthursonzogni.github.io/FTXUI/#build-cmake)
+
+## Example
+~~~cpp
+    vbox({
+      hbox({
+        text("one") | border,
+        text("two") | border | flex,
+        text("three") | border | flex,
+      }),
+
+      gauge(0.25) | color(Color::Red),
+      gauge(0.50) | color(Color::White),
+      gauge(0.75) | color(Color::Blue),
+    });
+~~~
+
+![image](https://github.com/ArthurSonzogni/FTXUI/assets/4759106/569bf043-4e85-4245-aad5-2324572135c4)
 
 ## Short gallery
 
@@ -94,7 +93,7 @@ Element can become flexible using the the `flex` decorator.
 ![image](https://user-images.githubusercontent.com/4759106/147242524-7103b5d9-1a92-4e2d-ac70-b3d6740061e3.png)
   
   
-[Example](https://arthursonzogni.github.io/FTXUI/examples_2dom_2gridbox_8cpp-example.htmlp) using gridbox:
+[Example](https://arthursonzogni.github.io/FTXUI/examples_2dom_2gridbox_8cpp-example.html) using gridbox:
 
 ![image](https://user-images.githubusercontent.com/4759106/147242972-0db1f2e9-0790-496f-86e6-ed2c604f7a73.png)
 
@@ -102,7 +101,7 @@ Element can become flexible using the the `flex` decorator.
 
 ![image](https://user-images.githubusercontent.com/4759106/147243064-780ac7cc-605b-475f-94b8-cf7c4aed03a5.png)
 
-[See](https://arthursonzogni.github.io/FTXUI/examples_2dom_2hflow_8cpp-example.html) also this [demo](https://arthursonzogni.com/FTXUI/examples/?file=component/flexbox).
+[See](https://arthursonzogni.github.io/FTXUI/examples_2dom_2hflow_8cpp-example.html) also this [demo](https://arthursonzogni.github.io/FTXUI/examples/?file=component/flexbox).
 
 </details>
 
@@ -113,21 +112,24 @@ An element can be decorated using the functions:
   - `dim`
   - `inverted`
   - `underlined`
+  - `underlinedDouble`
   - `blink`
+  - `strikethrough`
   - `color`
   - `bgcolor`
+  - `hyperlink`
 
 [Example](https://arthursonzogni.github.io/FTXUI/examples_2dom_2style_gallery_8cpp-example.html)
 
 ![image](https://user-images.githubusercontent.com/4759106/147244118-380bf834-9e33-40df-9ff0-07c10f2598ef.png)
   
-FTXUI support the pipe operator. It means: `decorator1(decorator2(element))` and `element | decorator1 | decorator2` can be used.
+FTXUI supports the pipe operator. It means: `decorator1(decorator2(element))` and `element | decorator1 | decorator2` can be used.
   
 </details>
 
 <details><summary>Colors</summary>
 
-FTXUI support every color palettes:
+FTXUI support every color palette:
 
 Color [gallery](https://arthursonzogni.github.io/FTXUI/examples_2dom_2color_gallery_8cpp-example.html):
 ![image](https://user-images.githubusercontent.com/4759106/147248595-04c7245a-5b85-4544-809d-a5984fc6f9e7.png)
@@ -157,7 +159,7 @@ auto document = vbox({
 
 A simple piece of text is represented using `text("content")`.
 
-To support text wrapping following spaces the following function are provided:
+To support text wrapping following spaces the following functions are provided:
 ```cpp
 Element paragraph(std::string text);
 Element paragraphAlignLeft(std::string text);
@@ -166,7 +168,7 @@ Element paragraphAlignCenter(std::string text);
 Element paragraphAlignJustify(std::string text);
 ```
   
-[Paragraph example](https://arthursonzogni.github.io/FTXUI/examples_2dom_2table_8cpp-example.html):
+[Paragraph example](https://arthursonzogni.github.io/FTXUI/examples_2dom_2paragraph_8cpp-example.html)
   
 ![ezgif com-gif-maker (4)](https://user-images.githubusercontent.com/4759106/147251370-983a06e7-6f41-4113-92b8-942f43d34d06.gif)
 
@@ -203,7 +205,7 @@ Prebuilt components are declared in [<ftxui/component/component.hpp>](https://ar
 
 <details><summary>Gallery</summary>
 
-[Gallery](https://arthursonzogni.github.io/FTXUI/examples_2component_2gallery_8cpp-example.html) of multiple components. ([demo](https://arthursonzogni.com/FTXUI/examples/?file=component/gallery))
+[Gallery](https://arthursonzogni.github.io/FTXUI/examples_2component_2gallery_8cpp-example.html) of multiple components. ([demo](https://arthursonzogni.github.io/FTXUI/examples/?file=component/gallery))
 
 ![image](https://user-images.githubusercontent.com/4759106/147247330-b60beb9f-e665-48b4-81c0-4b01ee95bc66.png)
 
@@ -290,13 +292,16 @@ Prebuilt components are declared in [<ftxui/component/component.hpp>](https://ar
 
 </details>
 
-
-
+## Libraries for FTXUI
+- *Want to share a useful component using FTXUI? Feel free adding yours here*
+- [ftxui-grid-container](https://github.com/mingsheng13/grid-container-ftxui)
+- [ftxui-ip-input](https://github.com/mingsheng13/ip-input-ftxui)
 
 
 ## Project using FTXUI
 
 Feel free to add your projects here:
+- [json-tui](https://github.com/ArthurSonzogni/json-tui)
 - [git-tui](https://github.com/ArthurSonzogni/git-tui)
 - [rgb-tui](https://github.com/ArthurSonzogni/rgb-tui)
 - [chrome-log-beautifier](https://github.com/ArthurSonzogni/chrome-log-beautifier)
@@ -312,16 +317,62 @@ Feel free to add your projects here:
 - [TimeAccumulator](https://github.com/asari555/TimeAccumulator)
 - [vantage](https://github.com/gokulmaxi/vantage)
 - [tabdeeli](https://github.com/typon/tabdeeli)
+- [tiles](https://github.com/tusharpm/tiles)
+- [cachyos-cli-installer](https://github.com/cachyos/new-cli-installer)
+- [beagle-config](https://github.com/SAtacker/beagle-config)
+- [turing_cmd](https://github.com/DanArmor/turing_cmd)
+- [StartUp](https://github.com/StubbornVegeta/StartUp)
+- [eCAL monitor](https://github.com/eclipse-ecal/ecal)
+- [Path Finder](https://github.com/Ruebled/Path_Finder)
+- [rw-tui](https://github.com/LeeKyuHyuk/rw-tui)
+- [resource-monitor](https://github.com/catalincd/resource-monitor)
+- [ftxuiFileReader](https://github.com/J0sephDavis/ftxuiFileReader)
+- [ftxui_CPUMeter](https://github.com/tzzzzzzzx/ftxui_CPUMeter)
 
-## Hosted on
- * [github](https://github.com/ArthurSonzogni/ftxui)
- * [gitlab](https://gitlab.com/ArthurSonzogni/ftxui)
+### [cpp-best-practices/game_jam](https://github.com/cpp-best-practices/game_jam)
+
+Several games using the FTXUI have been made during the Game Jam:
+- [TermBreaker](https://github.com/ArthurSonzogni/termBreaker) [**[Play web version]**](https://arthursonzogni.com/TermBreaker/)
+- [Minesweeper Marathon](https://github.com/cpp-best-practices/game_jam/blob/main/Jam1_April_2022/minesweeper_marathon.md) [**[Play web version]**](https://barlasgarden.com/minesweeper/index.html)
+- [Grand Rounds](https://github.com/cpp-best-practices/game_jam/blob/main/Jam1_April_2022/grandrounds.md)
+- [LightsRound](https://github.com/cpp-best-practices/game_jam/blob/main/Jam1_April_2022/LightsRound.v.0.1.0.md)
+- [DanteO](https://github.com/cpp-best-practices/game_jam/blob/main/Jam1_April_2022/danteo.md)
+- [Sumo](https://github.com/cpp-best-practices/game_jam/blob/main/Jam1_April_2022/sumo.md)
+- [Drag Me aROUND](https://github.com/cpp-best-practices/game_jam/blob/main/Jam1_April_2022/drag_me_around.md)
+- [DisarmSelfDestruct](https://github.com/cpp-best-practices/game_jam/blob/main/Jam1_April_2022/DisarmSelfDestruct.md)
+- [TheWorld](https://github.com/cpp-best-practices/game_jam/blob/main/Jam1_April_2022/TheWorld.md)
+- [smoothlife](https://github.com/cpp-best-practices/game_jam/blob/main/Jam1_April_2022/smoothlife.md)
+- [Consu](https://github.com/cpp-best-practices/game_jam/blob/main/Jam1_April_2022/consu.md)
 
 ## External package
 
-It is **highly** recommanded to use cmake FetchContent to depends on FTXUI. This
-way you can specify which commit you would like to depends on.
+It is **highly** recommended to use CMake FetchContent to depend on FTXUI. This
+way you can specify which commit you would like to depend on.
+```cmake
+include(FetchContent)
+
+FetchContent_Declare(ftxui
+  GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui
+  GIT_TAG v5.0.0
+)
+
+FetchContent_GetProperties(ftxui)
+if(NOT ftxui_POPULATED)
+  FetchContent_Populate(ftxui)
+  add_subdirectory(${ftxui_SOURCE_DIR} ${ftxui_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+```
 
 If you don't, the following packages have been created:
-- vcpkg ([soon](https://github.com/ArthurSonzogni/FTXUI/issues/112))
+- [vcpkg](https://vcpkgx.com/details.html?package=ftxui)
 - [Arch Linux PKGBUILD](https://aur.archlinux.org/packages/ftxui-git/).
+- [conan.io](https://conan.io/center/ftxui)
+- [openSUSE](https://build.opensuse.org/package/show/devel:libraries:c_c++/ftxui)
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/ftxui.svg)](https://repology.org/project/ftxui/versions)
+
+## Contributors
+
+<a href="https://github.com/ArthurSonzogni/FTXUI/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ArthurSonzogni/FTXUI" />
+</a>

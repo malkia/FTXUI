@@ -1,13 +1,14 @@
-#include <gtest/gtest-message.h>    // for Message
-#include <gtest/gtest-test-part.h>  // for TestPartResult
-#include <gtest/gtest.h>
-#include <memory>  // for shared_ptr, __shared_ptr_access, allocator, make_shared
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
+#include <memory>  // for shared_ptr, __shared_ptr_access, allocator, __shared_ptr_access<>::element_type, make_shared
+#include <string>  // for string
 
-#include "ftxui/component/captured_mouse.hpp"  // for ftxui
+#include "ftxui/component/component.hpp"       // for Make
 #include "ftxui/component/component_base.hpp"  // for ComponentBase, Component
-#include "gtest/gtest_pred_impl.h"  // for EXPECT_EQ, Test, SuiteApiResolver, TEST, TestFactoryImpl
+#include "gtest/gtest.h"  // for Message, TestPartResult, EXPECT_EQ, Test, AssertionResult, TEST, EXPECT_FALSE
 
-using namespace ftxui;
+namespace ftxui {
 
 namespace {
 Component Make() {
@@ -156,6 +157,20 @@ TEST(ContainerTest, ChildAt) {
   EXPECT_EQ(parent->ChildAt(0u), child_2);
 }
 
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
+TEST(ComponentTest, NonFocusableAreNotFocused) {
+  class NonFocusable : public ComponentBase {
+    bool Focusable() const override { return false; }
+  };
+  auto root = Make<NonFocusable>();
+  EXPECT_FALSE(root->Focused());
+  EXPECT_EQ(root->ActiveChild(), nullptr);
+
+  auto child = Make<NonFocusable>();
+  root->Add(child);
+  EXPECT_FALSE(root->Focused());
+  EXPECT_FALSE(child->Focused());
+  EXPECT_EQ(root->ActiveChild(), nullptr);
+  EXPECT_EQ(child->ActiveChild(), nullptr);
+}
+
+}  // namespace ftxui

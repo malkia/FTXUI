@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <functional>  // for function
 #include <memory>      // for allocator, __shared_ptr_access
 #include <string>      // for string, basic_string, operator+, to_string
@@ -10,7 +13,7 @@
 #include "ftxui/component/screen_interactive.hpp"  // for Component, ScreenInteractive
 #include "ftxui/dom/elements.hpp"  // for text, separator, bold, hcenter, vbox, hbox, gauge, Element, operator|, border
 
-int main(int argc, const char* argv[]) {
+int main() {
   using namespace ftxui;
   auto screen = ScreenInteractive::TerminalOutput();
 
@@ -27,9 +30,9 @@ int main(int argc, const char* argv[]) {
   int left_menu_selected = 0;
   int right_menu_selected = 0;
   Component left_menu_ =
-      Menu(&left_menu_entries, &left_menu_selected, &menu_option);
+      Menu(&left_menu_entries, &left_menu_selected, menu_option);
   Component right_menu_ =
-      Menu(&right_menu_entries, &right_menu_selected, &menu_option);
+      Menu(&right_menu_entries, &right_menu_selected, menu_option);
 
   Component container = Container::Horizontal({
       left_menu_,
@@ -74,7 +77,3 @@ int main(int argc, const char* argv[]) {
 
   screen.Loop(renderer);
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

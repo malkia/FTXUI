@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <string>  // for basic_string, string, allocator
 #include <vector>  // for vector
 
@@ -5,7 +8,7 @@
 #include "ftxui/component/component.hpp"  // for Dropdown, Horizontal, Vertical
 #include "ftxui/component/screen_interactive.hpp"  // for ScreenInteractive
 
-int main(int argc, const char* argv[]) {
+int main() {
   using namespace ftxui;
 
   std::vector<std::string> entries = {
@@ -39,7 +42,3 @@ int main(int argc, const char* argv[]) {
   auto screen = ScreenInteractive::FitComponent();
   screen.Loop(layout);
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

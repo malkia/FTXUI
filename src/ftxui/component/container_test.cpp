@@ -1,22 +1,24 @@
-#include <gtest/gtest-message.h>  // for Message
-#include <gtest/gtest-test-part.h>  // for TestPartResult, SuiteApiResolver, TestFactoryImpl
-#include <gtest/gtest.h>
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <memory>  // for __shared_ptr_access, shared_ptr, allocator
+#include <string>  // for string
 
-#include "ftxui/component/captured_mouse.hpp"  // for ftxui
-#include "ftxui/component/component.hpp"       // for Horizontal, Vertical
-#include "ftxui/component/component_base.hpp"  // for ComponentBase
+#include "ftxui/component/component.hpp"  // for Horizontal, Vertical, Button, Tab
+#include "ftxui/component/component_base.hpp"  // for ComponentBase, Component
 #include "ftxui/component/event.hpp"  // for Event, Event::Tab, Event::TabReverse, Event::ArrowDown, Event::ArrowLeft, Event::ArrowRight, Event::ArrowUp
-#include "gtest/gtest_pred_impl.h"  // for AssertionResult, EXPECT_EQ, EXPECT_FALSE, EXPECT_TRUE, Test, TEST
+#include "gtest/gtest.h"  // for AssertionResult, Message, TestPartResult, EXPECT_EQ, EXPECT_FALSE, Test, EXPECT_TRUE, TEST
 
-using namespace ftxui;
+namespace ftxui {
 
+namespace {
 Component Focusable() {
   return Button("", [] {});
 }
 Component NonFocusable() {
   return Container::Horizontal({});
 }
+}  // namespace
 
 TEST(ContainerTest, HorizontalEvent) {
   auto container = Container::Horizontal({});
@@ -306,6 +308,32 @@ TEST(ContainerTest, TakeFocus) {
   EXPECT_FALSE(c23->Active());
 }
 
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
+TEST(ContainerTest, TabFocusable) {
+  int selected = 0;
+  auto c = Container::Tab(
+      {
+          Focusable(),
+          NonFocusable(),
+          Focusable(),
+          NonFocusable(),
+      },
+      &selected);
+
+  selected = 0;
+  EXPECT_TRUE(c->Focusable());
+  EXPECT_TRUE(c->Focused());
+
+  selected = 1;
+  EXPECT_FALSE(c->Focusable());
+  EXPECT_FALSE(c->Focused());
+
+  selected = 2;
+  EXPECT_TRUE(c->Focusable());
+  EXPECT_TRUE(c->Focused());
+
+  selected = 3;
+  EXPECT_FALSE(c->Focusable());
+  EXPECT_FALSE(c->Focused());
+}
+
+}  // namespace ftxui

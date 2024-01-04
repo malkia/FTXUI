@@ -1,3 +1,6 @@
+// Copyright 2021 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #ifndef FTXUI_DOM_FLEXBOX_CONFIG_HPP
 #define FTXUI_DOM_FLEXBOX_CONFIG_HPP
 
@@ -108,8 +111,4 @@ struct FlexboxConfig {
 
 }  // namespace ftxui
 
-#endif /* end of include guard: FTXUI_DOM_FLEXBOX_CONFIG_HPP */
-
-// Copyright 2021 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
+#endif  // FTXUI_DOM_FLEXBOX_CONFIG_HPP

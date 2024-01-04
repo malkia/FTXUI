@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <chrono>                  // for operator""s, chrono_literals
 #include <ftxui/dom/elements.hpp>  // for Element, operator|, separator, filler, hbox, size, spinner, text, vbox, bold, border, Fit, EQUAL, WIDTH
 #include <ftxui/screen/screen.hpp>  // for Full, Screen
@@ -10,14 +13,14 @@
 #include "ftxui/dom/node.hpp"      // for Render
 #include "ftxui/screen/color.hpp"  // for ftxui
 
-int main(int argc, const char* argv[]) {
+int main() {
   using namespace ftxui;
   using namespace std::chrono_literals;
 
   std::string reset_position;
   for (int index = 0; index < 200; ++index) {
     std::vector<Element> entries;
-    for (int i = 0; i < 22; ++i) {
+    for (int i = 0; i < 23; ++i) {
       if (i != 0)
         entries.push_back(separator());
       entries.push_back(  //
@@ -41,7 +44,3 @@ int main(int argc, const char* argv[]) {
   }
   std::cout << std::endl;
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

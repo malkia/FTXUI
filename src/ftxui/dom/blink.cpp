@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <memory>   // for make_shared
 #include <utility>  // for move
 
@@ -9,6 +12,7 @@
 
 namespace ftxui {
 
+namespace {
 class Blink : public NodeDecorator {
  public:
   using NodeDecorator::NodeDecorator;
@@ -22,6 +26,7 @@ class Blink : public NodeDecorator {
     }
   }
 };
+}  // namespace
 
 /// @brief The text drawn alternates in between visible and hidden.
 /// @ingroup dom
@@ -30,7 +35,3 @@ Element blink(Element child) {
 }
 
 }  // namespace ftxui
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

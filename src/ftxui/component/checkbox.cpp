@@ -1,62 +1,57 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <functional>  // for function
-#include <memory>      // for shared_ptr
 #include <utility>     // for move
 
 #include "ftxui/component/captured_mouse.hpp"  // for CapturedMouse
-#include "ftxui/component/component.hpp"       // for Make, Component, Checkbox
-#include "ftxui/component/component_base.hpp"  // for ComponentBase
-#include "ftxui/component/component_options.hpp"  // for CheckboxOption
+#include "ftxui/component/component.hpp"       // for Make, Checkbox
+#include "ftxui/component/component_base.hpp"  // for Component, ComponentBase
+#include "ftxui/component/component_options.hpp"  // for CheckboxOption, EntryState
 #include "ftxui/component/event.hpp"              // for Event, Event::Return
 #include "ftxui/component/mouse.hpp"  // for Mouse, Mouse::Left, Mouse::Pressed
-#include "ftxui/dom/elements.hpp"  // for operator|, text, Element, hbox, reflect, focus, nothing, select
+#include "ftxui/dom/elements.hpp"  // for operator|, Element, reflect, focus, nothing, select
 #include "ftxui/screen/box.hpp"  // for Box
 #include "ftxui/util/ref.hpp"    // for Ref, ConstStringRef
 
 namespace ftxui {
 
 namespace {
-class CheckboxBase : public ComponentBase {
+class CheckboxBase : public ComponentBase, public CheckboxOption {
  public:
-  CheckboxBase(ConstStringRef label, bool* state, Ref<CheckboxOption> option)
-      : label_(label), state_(state), option_(std::move(option)) {
-#if defined(FTXUI_MICROSOFT_TERMINAL_FALLBACK)
-    // Microsoft terminal do not use fonts able to render properly the default
-    // radiobox glyph.
-    if (option_->style_checked == "▣ ")
-      option_->style_checked = "[X]";
-    if (option_->style_unchecked == "☐ ")
-      option_->style_unchecked = "[ ]";
-#endif
-  }
+  explicit CheckboxBase(CheckboxOption option)
+      : CheckboxOption(std::move(option)) {}
 
  private:
   // Component implementation.
   Element Render() override {
-    bool is_focused = Focused();
-    bool is_active = Active();
-    auto style = (is_focused || hovered_) ? option_->style_selected_focused
-                 : is_active              ? option_->style_selected
-                                          : option_->style_normal;
+    const bool is_focused = Focused();
+    const bool is_active = Active();
     auto focus_management = is_focused ? focus : is_active ? select : nothing;
-    return hbox({
-               text(*state_ ? option_->style_checked
-                            : option_->style_unchecked),
-               text(*label_) | style | focus_management,
-           }) |
-           reflect(box_);
+    auto entry_state = EntryState{
+        *label,
+        *checked,
+        is_active,
+        is_focused || hovered_,
+    };
+    auto element = (transform ? transform : CheckboxOption::Simple().transform)(
+        entry_state);
+    return element | focus_management | reflect(box_);
   }
 
   bool OnEvent(Event event) override {
-    if (!CaptureMouse(event))
+    if (!CaptureMouse(event)) {
       return false;
+    }
 
-    if (event.is_mouse())
+    if (event.is_mouse()) {
       return OnMouseEvent(event);
+    }
 
     hovered_ = false;
     if (event == Event::Character(' ') || event == Event::Return) {
-      *state_ = !*state_;
-      option_->on_change();
+      *checked = !*checked;
+      on_change();
       TakeFocus();
       return true;
     }
@@ -66,16 +61,18 @@ class CheckboxBase : public ComponentBase {
   bool OnMouseEvent(Event event) {
     hovered_ = box_.Contain(event.mouse().x, event.mouse().y);
 
-    if (!CaptureMouse(event))
+    if (!CaptureMouse(event)) {
       return false;
+    }
 
-    if (!hovered_)
+    if (!hovered_) {
       return false;
+    }
 
     if (event.mouse().button == Mouse::Left &&
         event.mouse().motion == Mouse::Pressed) {
-      *state_ = !*state_;
-      option_->on_change();
+      *checked = !*checked;
+      on_change();
       return true;
     }
 
@@ -84,13 +81,36 @@ class CheckboxBase : public ComponentBase {
 
   bool Focusable() const final { return true; }
 
-  ConstStringRef label_;
-  bool* const state_;
   bool hovered_ = false;
-  Ref<CheckboxOption> option_;
   Box box_;
 };
 }  // namespace
+
+/// @brief Draw checkable element.
+/// @param option Additional optional parameters.
+/// @ingroup component
+/// @see CheckboxBase
+///
+/// ### Example
+///
+/// ```cpp
+/// auto screen = ScreenInteractive::FitComponent();
+/// CheckboxOption option;
+/// option.label = "Make a sandwidth";
+/// option.checked = false;
+/// Component checkbox = Checkbox(option);
+/// screen.Loop(checkbox)
+/// ```
+///
+/// ### Output
+///
+/// ```bash
+/// ☐ Make a sandwitch
+/// ```
+// NOLINTNEXTLINE
+Component Checkbox(CheckboxOption option) {
+  return Make<CheckboxBase>(std::move(option));
+}
 
 /// @brief Draw checkable element.
 /// @param label The label of the checkbox.
@@ -114,14 +134,11 @@ class CheckboxBase : public ComponentBase {
 /// ```bash
 /// ☐ Make a sandwitch
 /// ```
-Component Checkbox(ConstStringRef label,
-                   bool* checked,
-                   Ref<CheckboxOption> option) {
-  return Make<CheckboxBase>(label, checked, std::move(option));
+// NOLINTNEXTLINE
+Component Checkbox(ConstStringRef label, bool* checked, CheckboxOption option) {
+  option.label = label;
+  option.checked = checked;
+  return Make<CheckboxBase>(std::move(option));
 }
 
 }  // namespace ftxui
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

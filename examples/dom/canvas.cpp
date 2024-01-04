@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <stdio.h>                 // for getchar
 #include <cmath>                   // for cos
 #include <ftxui/dom/elements.hpp>  // for Fit, canvas, operator|, border, Element
@@ -8,7 +11,7 @@
 #include "ftxui/dom/node.hpp"    // for Render
 #include "ftxui/screen/color.hpp"  // for Color, Color::Red, Color::Blue, Color::Green, ftxui
 
-int main(int argc, const char* argv[]) {
+int main() {
   using namespace ftxui;
 
   auto c = Canvas(100, 100);
@@ -30,7 +33,7 @@ int main(int argc, const char* argv[]) {
   // Plot a function:
   std::vector<int> ys(100);
   for (int x = 0; x < 100; x++)
-    ys[x] = 80 + 20 * cos(x * 0.2);
+    ys[x] = int(80 + 20 * cos(x * 0.2));
   for (int x = 0; x < 99; x++)
     c.DrawPointLine(x, ys[x], x + 1, ys[x + 1], Color::Red);
 
@@ -43,7 +46,3 @@ int main(int argc, const char* argv[]) {
 
   return 0;
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

@@ -1,5 +1,8 @@
-#include <stddef.h>   // for size_t
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <algorithm>  // for max
+#include <cstddef>    // for size_t
 #include <memory>  // for __shared_ptr_access, shared_ptr, make_shared, allocator_traits<>::value_type
 #include <utility>  // for move
 #include <vector>   // for vector, __alloc_traits<>::value_type
@@ -12,9 +15,10 @@
 
 namespace ftxui {
 
+namespace {
 class VBox : public Node {
  public:
-  VBox(Elements children) : Node(std::move(children)) {}
+  explicit VBox(Elements children) : Node(std::move(children)) {}
 
   void ComputeRequirement() override {
     requirement_.min_x = 0;
@@ -23,6 +27,7 @@ class VBox : public Node {
     requirement_.flex_grow_y = 0;
     requirement_.flex_shrink_x = 0;
     requirement_.flex_shrink_y = 0;
+    requirement_.selection = Requirement::NORMAL;
     for (auto& child : children_) {
       child->ComputeRequirement();
       if (requirement_.selection < child->requirement().selection) {
@@ -48,7 +53,7 @@ class VBox : public Node {
       element.flex_grow = requirement.flex_grow_y;
       element.flex_shrink = requirement.flex_shrink_y;
     }
-    int target_size = box.y_max - box.y_min + 1;
+    const int target_size = box.y_max - box.y_min + 1;
     box_helper::Compute(&elements, target_size);
 
     int y = box.y_min;
@@ -60,6 +65,7 @@ class VBox : public Node {
     }
   }
 };
+}  // namespace
 
 /// @brief A container displaying elements vertically one by one.
 /// @param children The elements in the container
@@ -79,7 +85,3 @@ Element vbox(Elements children) {
 }
 
 }  // namespace ftxui
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

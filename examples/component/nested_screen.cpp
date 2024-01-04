@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <memory>  // for allocator, shared_ptr, __shared_ptr_access
 #include <string>  // for operator+, string, char_traits, basic_string
 
@@ -35,7 +38,7 @@ void Nested(std::string path) {
   screen.Loop(renderer);
 }
 
-int main(int argc, const char* argv[]) {
+int main() {
   auto screen = ScreenInteractive::FitComponent();
   auto button_quit = Button("Quit", screen.ExitLoopClosure());
   auto button_nested = Button("Nested", [] { Nested(""); });
@@ -45,7 +48,3 @@ int main(int argc, const char* argv[]) {
   }));
   return 0;
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

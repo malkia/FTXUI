@@ -1,3 +1,6 @@
+// Copyright 2021 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSED file.
 #include <cmath>                   // for sin, cos
 #include <ftxui/dom/elements.hpp>  // for canvas, Element, separator, hbox, operator|, border
 #include <ftxui/screen/screen.hpp>  // for Pixel
@@ -14,7 +17,7 @@
 #include "ftxui/dom/canvas.hpp"                    // for Canvas
 #include "ftxui/screen/color.hpp"  // for Color, Color::Red, Color::Blue, Color::Green, ftxui
 
-int main(int argc, const char* argv[]) {
+int main() {
   using namespace ftxui;
 
   int mouse_x = 0;
@@ -126,9 +129,9 @@ int main(int argc, const char* argv[]) {
 
     std::vector<int> ys(100);
     for (int x = 0; x < 100; x++) {
-      float dx = x - mouse_x;
-      float dy = 50;
-      ys[x] = dy + 20 * cos(dx * 0.14) + 10 * sin(dx * 0.42);
+      float dx = float(x - mouse_x);
+      float dy = 50.f;
+      ys[x] = int(dy + 20 * cos(dx * 0.14) + 10 * sin(dx * 0.42));
     }
     for (int x = 1; x < 99; x++)
       c.DrawPointLine(x, ys[x], x + 1, ys[x + 1]);
@@ -141,10 +144,10 @@ int main(int argc, const char* argv[]) {
     c.DrawText(0, 0, "A symmetrical graph filled");
     std::vector<int> ys(100);
     for (int x = 0; x < 100; x++) {
-      ys[x] = 30 +                                  //
-              10 * cos(x * 0.2 - mouse_x * 0.05) +  //
-              5 * sin(x * 0.4) +                    //
-              5 * sin(x * 0.3 - mouse_y * 0.05);    //
+      ys[x] = int(30 +                                  //
+                  10 * cos(x * 0.2 - mouse_x * 0.05) +  //
+                  5 * sin(x * 0.4) +                    //
+                  5 * sin(x * 0.3 - mouse_y * 0.05));   //
     }
     for (int x = 0; x < 100; x++) {
       c.DrawPointLine(x, 50 + ys[x], x, 50 - ys[x], Color::Red);
@@ -257,7 +260,3 @@ int main(int argc, const char* argv[]) {
 
   return 0;
 }
-
-// Copyright 2021 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSED file.

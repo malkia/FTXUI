@@ -1,14 +1,17 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <chrono>                  // for operator""s, chrono_literals
 #include <ftxui/dom/elements.hpp>  // for text, gauge, operator|, flex, hbox, Element
 #include <ftxui/screen/screen.hpp>  // for Screen
 #include <iostream>                 // for cout, endl, ostream
-#include <string>  // for allocator, operator+, char_traits, operator<<, string, to_string, basic_string
+#include <string>  // for allocator, char_traits, operator+, operator<<, string, to_string, basic_string
 #include <thread>  // for sleep_for
 
 #include "ftxui/dom/node.hpp"      // for Render
 #include "ftxui/screen/color.hpp"  // for ftxui
 
-int main(int argc, const char* argv[]) {
+int main() {
   using namespace ftxui;
   using namespace std::chrono_literals;
 
@@ -31,7 +34,3 @@ int main(int argc, const char* argv[]) {
   }
   std::cout << std::endl;
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

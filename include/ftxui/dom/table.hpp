@@ -1,3 +1,6 @@
+// Copyright 2021 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #ifndef FTXUI_DOM_TABLE
 #define FTXUI_DOM_TABLE
 
@@ -5,7 +8,7 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "ftxui/dom/elements.hpp"  // for BorderStyle, LIGHT, Element, Decorator
+#include "ftxui/dom/elements.hpp"  // for Element, BorderStyle, LIGHT, Decorator
 
 namespace ftxui {
 
@@ -33,7 +36,9 @@ class TableSelection;
 
 class Table {
  public:
+  Table();
   Table(std::vector<std::vector<std::string>>);
+  Table(std::vector<std::vector<Element>>);
   TableSelection SelectAll();
   TableSelection SelectCell(int column, int row);
   TableSelection SelectRow(int row_index);
@@ -47,12 +52,13 @@ class Table {
   Element Render();
 
  private:
+  void Initialize(std::vector<std::vector<Element>>);
   friend TableSelection;
   std::vector<std::vector<Element>> elements_;
-  int input_dim_x_;
-  int input_dim_y_;
-  int dim_x_;
-  int dim_y_;
+  int input_dim_x_ = 0;
+  int input_dim_y_ = 0;
+  int dim_x_ = 0;
+  int dim_y_ = 0;
 };
 
 class TableSelection {
@@ -87,7 +93,3 @@ class TableSelection {
 }  // namespace ftxui
 
 #endif /* end of include guard: FTXUI_DOM_TABLE */
-
-// Copyright 2021 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

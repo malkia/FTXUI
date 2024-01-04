@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <memory>   // for make_shared, __shared_ptr_access
 #include <utility>  // for move
 #include <vector>   // for __alloc_traits<>::value_type
@@ -63,11 +66,9 @@ void function_not_flex(Requirement& r) {
   r.flex_shrink_y = 0;
 }
 
-}  // namespace
-
 class Flex : public Node {
  public:
-  Flex(FlexFunction f) : f_(f) {}
+  explicit Flex(FlexFunction f) : f_(f) {}
   Flex(FlexFunction f, Element child) : Node(unpack(std::move(child))), f_(f) {}
   void ComputeRequirement() override {
     requirement_.min_x = 0;
@@ -80,13 +81,16 @@ class Flex : public Node {
   }
 
   void SetBox(Box box) override {
-    if (children_.empty())
+    if (children_.empty()) {
       return;
+    }
     children_[0]->SetBox(box);
   }
 
   FlexFunction f_;
 };
+
+}  // namespace
 
 /// @brief An element that will take expand proportionnally to the space left in
 /// a container.
@@ -175,7 +179,3 @@ Element notflex(Element child) {
 }
 
 }  // namespace ftxui
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

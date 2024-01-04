@@ -1,20 +1,20 @@
-#include <gtest/gtest-message.h>  // for Message
-#include <gtest/gtest-test-part.h>  // for TestPartResult, SuiteApiResolver, TestFactoryImpl
-#include <gtest/gtest.h>
-#include <functional>               // for function
-#include <memory>  // for __shared_ptr_access, shared_ptr, allocator
-#include <string>  // for string, basic_string
-#include <vector>  // for vector
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
+#include <functional>  // for function
+#include <memory>      // for __shared_ptr_access, shared_ptr, allocator
+#include <string>      // for string, basic_string
+#include <vector>      // for vector
 
-#include "ftxui/component/captured_mouse.hpp"     // for ftxui
-#include "ftxui/component/component.hpp"          // for Toggle
+#include "ftxui/component/component.hpp"          // for Menu, Toggle
 #include "ftxui/component/component_base.hpp"     // for ComponentBase
-#include "ftxui/component/component_options.hpp"  // for ToggleOption
+#include "ftxui/component/component_options.hpp"  // for MenuOption
 #include "ftxui/component/event.hpp"  // for Event, Event::ArrowLeft, Event::ArrowRight, Event::Return, Event::Tab, Event::TabReverse
 #include "ftxui/util/ref.hpp"         // for Ref
-#include "gtest/gtest_pred_impl.h"  // for AssertionResult, EXPECT_EQ, Test, EXPECT_TRUE, EXPECT_FALSE, TEST
+#include "gtest/gtest.h"  // for AssertionResult, Message, TestPartResult, EXPECT_EQ, Test, EXPECT_TRUE, EXPECT_FALSE, TEST
 
-using namespace ftxui;
+// NOLINTBEGIN
+namespace ftxui {
 
 TEST(ToggleTest, leftRightArrow) {
   std::vector<std::string> entries = {"On", "Off"};
@@ -91,10 +91,10 @@ TEST(ToggleTest, OnChange) {
   std::vector<std::string> entries = {"1", "2", "3"};
   int selected = 0;
   int counter = 0;
-  auto option = ToggleOption();
+  auto option = MenuOption::Toggle();
   option.on_change = [&] { counter++; };
 
-  auto toggle = Toggle(&entries, &selected, &option);
+  auto toggle = Menu(&entries, &selected, option);
 
   EXPECT_FALSE(toggle->OnEvent(Event::ArrowLeft));  // Reached far left.
   EXPECT_EQ(counter, 0);
@@ -121,9 +121,9 @@ TEST(ToggleTest, OnEnter) {
   int selected = 0;
   int counter = 0;
 
-  auto option = ToggleOption();
+  auto option = MenuOption::Toggle();
   option.on_enter = [&] { counter++; };
-  auto toggle = Toggle(&entries, &selected, &option);
+  auto toggle = Menu(&entries, &selected, option);
 
   EXPECT_FALSE(toggle->OnEvent(Event::ArrowLeft));  // Reached far left.
   EXPECT_TRUE(toggle->OnEvent(Event::Return));
@@ -156,9 +156,9 @@ TEST(ToggleTest, RemoveEntries) {
   int focused_entry = 0;
   int selected = 0;
   std::vector<std::string> entries = {"1", "2", "3"};
-  ToggleOption option;
+  auto option = MenuOption::Toggle();
   option.focused_entry = &focused_entry;
-  auto toggle = Toggle(&entries, &selected, option);
+  auto toggle = Menu(&entries, &selected, option);
 
   EXPECT_EQ(selected, 0);
   EXPECT_EQ(focused_entry, 0);
@@ -180,6 +180,5 @@ TEST(ToggleTest, RemoveEntries) {
   EXPECT_EQ(focused_entry, 1);
 }
 
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
+}  // namespace ftxui
+// NOLINTEND

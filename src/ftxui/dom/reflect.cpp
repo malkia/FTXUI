@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <memory>   // for make_shared, __shared_ptr_access
 #include <utility>  // for move
 #include <vector>   // for __alloc_traits<>::value_type
@@ -9,6 +12,7 @@
 #include "ftxui/screen/screen.hpp"    // for Screen
 
 namespace ftxui {
+namespace {
 
 // Helper class.
 class Reflect : public Node {
@@ -35,6 +39,7 @@ class Reflect : public Node {
  private:
   Box& reflected_box_;
 };
+}  // namespace
 
 Decorator reflect(Box& box) {
   return [&](Element child) -> Element {
@@ -43,7 +48,3 @@ Decorator reflect(Box& box) {
 }
 
 }  // namespace ftxui
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

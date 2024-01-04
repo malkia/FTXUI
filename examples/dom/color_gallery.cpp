@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <ftxui/screen/color_info.hpp>  // for ColorInfo
 #include <ftxui/screen/screen.hpp>      // for Full, Screen
 #include <ftxui/screen/terminal.hpp>  // for ColorSupport, Color, Palette16, Palette256, TrueColor
@@ -5,13 +8,14 @@
 #include <utility>                    // for move
 #include <vector>                     // for vector
 
-using namespace ftxui;
-#include "./color_info_sorted_2d.ipp"  // for ColorInfoSorted2D
 #include "ftxui/dom/elements.hpp"  // for text, bgcolor, color, vbox, hbox, separator, operator|, Elements, Element, Fit, border
 #include "ftxui/dom/node.hpp"      // for Render
 #include "ftxui/screen/color.hpp"  // for Color, Color::Black, Color::Blue, Color::BlueLight, Color::Cyan, Color::CyanLight, Color::Default, Color::GrayDark, Color::GrayLight, Color::Green, Color::GreenLight, Color::Magenta, Color::MagentaLight, Color::Red, Color::RedLight, Color::White, Color::Yellow, Color::YellowLight, Color::Palette256, ftxui
 
-int main(int argc, const char* argv[]) {
+using namespace ftxui;
+#include "./color_info_sorted_2d.ipp"  // for ColorInfoSorted2D
+
+int main() {
   // clang-format off
   auto basic_color_display =
     vbox(
@@ -82,14 +86,18 @@ int main(int argc, const char* argv[]) {
   // True color display.
   auto true_color_display = text("TrueColors: 24bits:");
   {
-    int saturation = 255;
+    const int max_value = 255;
+    const int value_increment = 8;
+    const int hue_increment = 6;
+    int saturation = max_value;
     Elements array;
-    for (int value = 0; value < 255; value += 16) {
+    for (int value = 0; value < max_value; value += 2 * value_increment) {
       Elements line;
-      for (int hue = 0; hue < 255; hue += 6) {
-        line.push_back(text("▀")                                    //
-                       | color(Color::HSV(hue, saturation, value))  //
-                       | bgcolor(Color::HSV(hue, saturation, value + 8)));
+      for (int hue = 0; hue < max_value; hue += hue_increment) {
+        line.push_back(
+            text("▀")                                    //
+            | color(Color::HSV(hue, saturation, value))  //
+            | bgcolor(Color::HSV(hue, saturation, value + value_increment)));
       }
       array.push_back(hbox(std::move(line)));
     }
@@ -131,7 +139,3 @@ int main(int argc, const char* argv[]) {
 
   return 0;
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

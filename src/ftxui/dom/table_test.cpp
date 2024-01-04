@@ -1,19 +1,19 @@
-#include <gtest/gtest-message.h>  // for Message
-#include <gtest/gtest-test-part.h>  // for SuiteApiResolver, TestFactoryImpl, TestPartResult
+// Copyright 2021 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <gtest/gtest.h>
-#include <memory>                   // for allocator
+#include <memory>  // for allocator
 
 #include "ftxui/dom/elements.hpp"  // for LIGHT, flex, center, EMPTY, DOUBLE
 #include "ftxui/dom/node.hpp"      // for Render
 #include "ftxui/dom/table.hpp"
-#include "ftxui/screen/color.hpp"   // for ftxui
 #include "ftxui/screen/screen.hpp"  // for Screen
-#include "gtest/gtest_pred_impl.h"  // for Test, EXPECT_EQ, TEST
 
-using namespace ftxui;
+// NOLINTBEGIN
+namespace ftxui {
 
 TEST(TableTest, Empty) {
-  auto table = Table({});
+  auto table = Table();
   Screen screen(5, 5);
   Render(screen, table.Render());
   EXPECT_EQ(
@@ -712,6 +712,27 @@ TEST(TableTest, RowFlexTwo) {
       screen.ToString());
 }
 
-// Copyright 2021 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
+TEST(TableTest, Merge) {
+  auto table = Table({
+      {"a", "b", "c"},
+      {"d", "e", "f"},
+      {"g", "h", "i"},
+  });
+  table.SelectAll().Border(LIGHT);
+  table.SelectColumn(1).Border(HEAVY);
+  table.SelectRow(1).Border(HEAVY);
+  Screen screen(7, 7);
+  Render(screen, table.Render());
+  EXPECT_EQ(
+      "┌─┲━┱─┐\r\n"
+      "│a┃b┃c│\r\n"
+      "┢━╋━╋━┪\r\n"
+      "┃d┃e┃f┃\r\n"
+      "┡━╋━╋━┩\r\n"
+      "│g┃h┃i│\r\n"
+      "└─┺━┹─┘",
+      screen.ToString());
+}
+
+}  // namespace ftxui
+// NOLINTEND

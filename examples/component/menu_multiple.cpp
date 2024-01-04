@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <stdlib.h>  // for EXIT_SUCCESS
 #include <memory>    // for allocator, __shared_ptr_access
 #include <string>  // for string, operator+, basic_string, to_string, char_traits
@@ -17,7 +20,7 @@ Component Window(std::string title, Component component) {
   });
 }
 
-int main(int argc, const char* argv[]) {
+int main() {
   int menu_selected[] = {0, 0, 0};
   std::vector<std::vector<std::string>> menu_entries = {
       {
@@ -72,7 +75,3 @@ int main(int argc, const char* argv[]) {
   screen.Loop(global);
   return EXIT_SUCCESS;
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

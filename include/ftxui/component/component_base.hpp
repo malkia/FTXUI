@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #ifndef FTXUI_COMPONENT_BASE_HPP
 #define FTXUI_COMPONENT_BASE_HPP
 
@@ -13,6 +16,10 @@ class Delegate;
 class Focus;
 struct Event;
 
+namespace animation {
+class Params;
+}  // namespace animation
+
 class ComponentBase;
 using Component = std::shared_ptr<ComponentBase>;
 using Components = std::vector<Component>;
@@ -24,6 +31,12 @@ class ComponentBase {
  public:
   // virtual Destructor.
   virtual ~ComponentBase();
+
+  ComponentBase() = default;
+
+  // A component is not copiable.
+  ComponentBase(const ComponentBase&) = delete;
+  void operator=(const ComponentBase&) = delete;
 
   // Component hierarchy:
   ComponentBase* Parent() const;
@@ -41,6 +54,9 @@ class ComponentBase {
   //
   // Returns whether the event was handled or not.
   virtual bool OnEvent(Event);
+
+  // Handle an animation step.
+  virtual void OnAnimation(animation::Params& params);
 
   // Focus management ----------------------------------------------------------
   //
@@ -80,7 +96,3 @@ class ComponentBase {
 }  // namespace ftxui
 
 #endif /* end of include guard: FTXUI_COMPONENT_BASE_HPP */
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

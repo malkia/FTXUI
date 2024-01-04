@@ -1,19 +1,24 @@
-#include <utility>  // for move
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
+#include <ftxui/screen/box.hpp>  // for Box
+#include <utility>               // for move
 
 #include "ftxui/dom/node.hpp"
 #include "ftxui/screen/screen.hpp"  // for Screen
 
 namespace ftxui {
 
-Node::Node() {}
+Node::Node() = default;
 Node::Node(Elements children) : children_(std::move(children)) {}
-Node::~Node() {}
+Node::~Node() = default;
 
 /// @brief Compute how much space an elements needs.
 /// @ingroup dom
 void Node::ComputeRequirement() {
-  for (auto& child : children_)
+  for (auto& child : children_) {
     child->ComputeRequirement();
+  }
 }
 
 /// @brief Assign a position and a dimension to an element for drawing.
@@ -25,13 +30,15 @@ void Node::SetBox(Box box) {
 /// @brief Display an element on a ftxui::Screen.
 /// @ingroup dom
 void Node::Render(Screen& screen) {
-  for (auto& child : children_)
+  for (auto& child : children_) {
     child->Render(screen);
+  }
 }
 
 void Node::Check(Status* status) {
-  for (auto& child : children_)
+  for (auto& child : children_) {
     child->Check(status);
+  }
   status->need_iteration |= (status->iteration == 0);
 }
 
@@ -52,7 +59,8 @@ void Render(Screen& screen, Node* node) {
 
   Node::Status status;
   node->Check(&status);
-  while (status.need_iteration && status.iteration < 20) {
+  const int max_iterations = 20;
+  while (status.need_iteration && status.iteration < max_iterations) {
     // Step 1: Find what dimension this elements wants to be.
     node->ComputeRequirement();
 
@@ -74,7 +82,3 @@ void Render(Screen& screen, Node* node) {
 }
 
 }  // namespace ftxui
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

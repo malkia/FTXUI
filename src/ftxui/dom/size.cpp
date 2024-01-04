@@ -1,19 +1,22 @@
-#include <stddef.h>   // for size_t
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <algorithm>  // for min, max
 #include <memory>     // for make_shared, __shared_ptr_access
 #include <utility>    // for move
 #include <vector>     // for __alloc_traits<>::value_type
 
-#include "ftxui/dom/elements.hpp"  // for Constraint, Direction, EQUAL, GREATER_THAN, LESS_THAN, WIDTH, unpack, Decorator, Element, size
+#include "ftxui/dom/elements.hpp"  // for Constraint, WidthOrHeight, EQUAL, GREATER_THAN, LESS_THAN, WIDTH, unpack, Decorator, Element, size
 #include "ftxui/dom/node.hpp"      // for Node, Elements
 #include "ftxui/dom/requirement.hpp"  // for Requirement
 #include "ftxui/screen/box.hpp"       // for Box
 
 namespace ftxui {
 
+namespace {
 class Size : public Node {
  public:
-  Size(Element child, Direction direction, Constraint constraint, size_t value)
+  Size(Element child, WidthOrHeight direction, Constraint constraint, int value)
       : Node(unpack(std::move(child))),
         direction_(direction),
         constraint_(constraint),
@@ -72,10 +75,11 @@ class Size : public Node {
   }
 
  private:
-  Direction direction_;
+  WidthOrHeight direction_;
   Constraint constraint_;
   int value_;
 };
+}  // namespace
 
 /// @brief Apply a constraint on the size of an element.
 /// @param direction Whether the WIDTH of the HEIGHT of the element must be
@@ -83,14 +87,10 @@ class Size : public Node {
 /// @param constraint The type of constaint.
 /// @param value The value.
 /// @ingroup dom
-Decorator size(Direction direction, Constraint constraint, int value) {
+Decorator size(WidthOrHeight direction, Constraint constraint, int value) {
   return [=](Element e) {
     return std::make_shared<Size>(std::move(e), direction, constraint, value);
   };
 }
 
 }  // namespace ftxui
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

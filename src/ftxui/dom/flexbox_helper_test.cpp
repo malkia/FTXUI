@@ -1,13 +1,14 @@
-#include <gtest/gtest-message.h>  // for Message
-#include <gtest/gtest-test-part.h>  // for TestPartResult, SuiteApiResolver, TestFactoryImpl
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <gtest/gtest.h>
-#include <memory>                   // for allocator_traits<>::value_type
+#include <ftxui/dom/flexbox_config.hpp>  // for FlexboxConfig, FlexboxConfig::Direction, FlexboxConfig::Direction::Column, FlexboxConfig::Direction::ColumnInversed, FlexboxConfig::Direction::Row, FlexboxConfig::Direction::RowInversed
+#include <memory>                        // for allocator_traits<>::value_type
 
 #include "ftxui/dom/flexbox_helper.hpp"
-#include "gtest/gtest_pred_impl.h"  // for EXPECT_EQ, Test, TEST
 
-using namespace ftxui;
-using namespace ftxui;
+// NOLINTBEGIN
+namespace ftxui {
 
 TEST(FlexboxHelperTest, BasicRow) {
   flexbox_helper::Block block_10_5;
@@ -229,6 +230,5 @@ TEST(FlexboxHelperTest, BasicColumnInversed) {
   EXPECT_EQ(g.blocks[4].dim_y, 5);
 }
 
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
+}  // namespace ftxui
+// NOLINTEND

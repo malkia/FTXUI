@@ -1,5 +1,8 @@
-#include <stddef.h>   // for size_t
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <algorithm>  // for max
+#include <cstddef>    // for size_t
 #include <memory>  // for __shared_ptr_access, shared_ptr, make_shared, allocator_traits<>::value_type
 #include <utility>  // for move
 #include <vector>   // for vector, __alloc_traits<>::value_type
@@ -12,9 +15,10 @@
 
 namespace ftxui {
 
+namespace {
 class HBox : public Node {
  public:
-  HBox(Elements children) : Node(std::move(children)) {}
+  explicit HBox(Elements children) : Node(std::move(children)) {}
 
   void ComputeRequirement() override {
     requirement_.min_x = 0;
@@ -23,6 +27,7 @@ class HBox : public Node {
     requirement_.flex_grow_y = 0;
     requirement_.flex_shrink_x = 0;
     requirement_.flex_shrink_y = 0;
+    requirement_.selection = Requirement::NORMAL;
     for (auto& child : children_) {
       child->ComputeRequirement();
       if (requirement_.selection < child->requirement().selection) {
@@ -48,7 +53,7 @@ class HBox : public Node {
       element.flex_grow = requirement.flex_grow_x;
       element.flex_shrink = requirement.flex_shrink_x;
     }
-    int target_size = box.x_max - box.x_min + 1;
+    const int target_size = box.x_max - box.x_min + 1;
     box_helper::Compute(&elements, target_size);
 
     int x = box.x_min;
@@ -60,6 +65,8 @@ class HBox : public Node {
     }
   }
 };
+
+}  // namespace
 
 /// @brief A container displaying elements horizontally one by one.
 /// @param children The elements in the container
@@ -78,7 +85,3 @@ Element hbox(Elements children) {
 }
 
 }  // namespace ftxui
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

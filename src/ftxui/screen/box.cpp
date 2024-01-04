@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include "ftxui/screen/box.hpp"
 
 #include <algorithm>
@@ -15,9 +18,21 @@ Box Box::Intersection(Box a, Box b) {
   };
 }
 
+/// @return the smallest Box containing both |a| and |b|.
+/// @ingroup screen
+// static
+Box Box::Union(Box a, Box b) {
+  return Box{
+      std::min(a.x_min, b.x_min),
+      std::max(a.x_max, b.x_max),
+      std::min(a.y_min, b.y_min),
+      std::max(a.y_max, b.y_max),
+  };
+}
+
 /// @return whether (x,y) is contained inside the box.
 /// @ingroup screen
-bool Box::Contain(int x, int y) {
+bool Box::Contain(int x, int y) const {
   return x_min <= x &&  //
          x_max >= x &&  //
          y_min <= y &&  //
@@ -38,7 +53,3 @@ bool Box::operator!=(const Box& other) const {
 }
 
 }  // namespace ftxui
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

@@ -1,33 +1,38 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <stddef.h>    // for size_t
 #include <array>       // for array
+#include <atomic>      // for atomic
 #include <chrono>      // for operator""s, chrono_literals
 #include <cmath>       // for sin
 #include <functional>  // for ref, reference_wrapper, function
 #include <memory>      // for allocator, shared_ptr, __shared_ptr_access
-#include <string>  // for string, basic_string, operator+, to_string, char_traits
+#include <string>  // for string, basic_string, char_traits, operator+, to_string
 #include <thread>   // for sleep_for, thread
 #include <utility>  // for move
 #include <vector>   // for vector
 
-#include "ftxui/component/captured_mouse.hpp"  // for ftxui
-#include "ftxui/component/component.hpp"  // for Checkbox, Renderer, Horizontal, Vertical, Input, Menu, Radiobox, ResizableSplitLeft, Tab, Toggle
-#include "ftxui/component/component_base.hpp"     // for ComponentBase
-#include "ftxui/component/component_options.hpp"  // for InputOption
+#include "../dom/color_info_sorted_2d.ipp"  // for ColorInfoSorted2D
+#include "ftxui/component/component.hpp"  // for Checkbox, Renderer, Horizontal, Vertical, Input, Menu, Radiobox, ResizableSplitLeft, Tab
+#include "ftxui/component/component_base.hpp"  // for ComponentBase, Component
+#include "ftxui/component/component_options.hpp"  // for MenuOption, InputOption
 #include "ftxui/component/event.hpp"              // for Event, Event::Custom
 #include "ftxui/component/screen_interactive.hpp"  // for Component, ScreenInteractive
-#include "ftxui/dom/elements.hpp"  // for text, operator|, color, bgcolor, filler, Element, size, vbox, flex, hbox, separator, graph, EQUAL, paragraph, hcenter, WIDTH, bold, window, border, vscroll_indicator, Elements, HEIGHT, hflow, frame, flex_grow, flexbox, gauge, paragraphAlignCenter, paragraphAlignJustify, paragraphAlignLeft, paragraphAlignRight, dim, spinner, Decorator, LESS_THAN, center, yflex, GREATER_THAN
-#include "ftxui/screen/color.hpp"  // for Color, Color::Blue, Color::BlueLight, Color::RedLight, Color::Black, Color::Cyan, Color::CyanLight, Color::GrayDark, Color::GrayLight, Color::Green, Color::GreenLight, Color::Magenta, Color::MagentaLight, Color::Red, Color::White, Color::Yellow, Color::YellowLight, Color::Default
-#include "ftxui/screen/terminal.hpp"  // for Size, Dimensions
+#include "ftxui/dom/elements.hpp"  // for text, color, operator|, bgcolor, filler, Element, vbox, size, hbox, separator, flex, window, graph, EQUAL, paragraph, WIDTH, hcenter, Elements, bold, vscroll_indicator, HEIGHT, flexbox, hflow, border, frame, flex_grow, gauge, paragraphAlignCenter, paragraphAlignJustify, paragraphAlignLeft, paragraphAlignRight, dim, spinner, LESS_THAN, center, yframe, GREATER_THAN
+#include "ftxui/dom/flexbox_config.hpp"  // for FlexboxConfig
+#include "ftxui/screen/color.hpp"  // for Color, Color::BlueLight, Color::RedLight, Color::Black, Color::Blue, Color::Cyan, Color::CyanLight, Color::GrayDark, Color::GrayLight, Color::Green, Color::GreenLight, Color::Magenta, Color::MagentaLight, Color::Red, Color::White, Color::Yellow, Color::YellowLight, Color::Default, Color::Palette256, ftxui
+#include "ftxui/screen/color_info.hpp"  // for ColorInfo
+#include "ftxui/screen/terminal.hpp"    // for Size, Dimensions
 
 using namespace ftxui;
 
-int main(int argc, const char* argv[]) {
+int main() {
   auto screen = ScreenInteractive::Fullscreen();
 
   // ---------------------------------------------------------------------------
   // HTOP
   // ---------------------------------------------------------------------------
-
   int shift = 0;
 
   auto my_graph = [&shift](int width, int height) {
@@ -95,7 +100,7 @@ int main(int argc, const char* argv[]) {
                separator(),
                ram | flex,
            }) |
-           flex | border;
+           flex;
   });
 
   // ---------------------------------------------------------------------------
@@ -255,7 +260,7 @@ int main(int argc, const char* argv[]) {
                }) | size(HEIGHT, LESS_THAN, 8),
                hflow(render_command()) | flex_grow,
            }) |
-           flex_grow | border;
+           flex_grow;
   });
 
   // ---------------------------------------------------------------------------
@@ -267,61 +272,116 @@ int main(int argc, const char* argv[]) {
       entries.push_back(spinner(i, shift / 2) | bold |
                         size(WIDTH, GREATER_THAN, 2) | border);
     }
-    return hflow(std::move(entries)) | border;
+    return hflow(std::move(entries));
   });
 
   // ---------------------------------------------------------------------------
   // Colors
   // ---------------------------------------------------------------------------
   auto color_tab_renderer = Renderer([] {
-    return hbox({
-               vbox({
-                   color(Color::Default, text("Default")),
-                   color(Color::Black, text("Black")),
-                   color(Color::GrayDark, text("GrayDark")),
-                   color(Color::GrayLight, text("GrayLight")),
-                   color(Color::White, text("White")),
-                   color(Color::Blue, text("Blue")),
-                   color(Color::BlueLight, text("BlueLight")),
-                   color(Color::Cyan, text("Cyan")),
-                   color(Color::CyanLight, text("CyanLight")),
-                   color(Color::Green, text("Green")),
-                   color(Color::GreenLight, text("GreenLight")),
-                   color(Color::Magenta, text("Magenta")),
-                   color(Color::MagentaLight, text("MagentaLight")),
-                   color(Color::Red, text("Red")),
-                   color(Color::RedLight, text("RedLight")),
-                   color(Color::Yellow, text("Yellow")),
-                   color(Color::YellowLight, text("YellowLight")),
-               }),
-               vbox({
-                   bgcolor(Color::Default, text("Default")),
-                   bgcolor(Color::Black, text("Black")),
-                   bgcolor(Color::GrayDark, text("GrayDark")),
-                   bgcolor(Color::GrayLight, text("GrayLight")),
-                   bgcolor(Color::White, text("White")),
-                   bgcolor(Color::Blue, text("Blue")),
-                   bgcolor(Color::BlueLight, text("BlueLight")),
-                   bgcolor(Color::Cyan, text("Cyan")),
-                   bgcolor(Color::CyanLight, text("CyanLight")),
-                   bgcolor(Color::Green, text("Green")),
-                   bgcolor(Color::GreenLight, text("GreenLight")),
-                   bgcolor(Color::Magenta, text("Magenta")),
-                   bgcolor(Color::MagentaLight, text("MagentaLight")),
-                   bgcolor(Color::Red, text("Red")),
-                   bgcolor(Color::RedLight, text("RedLight")),
-                   bgcolor(Color::Yellow, text("Yellow")),
-                   bgcolor(Color::YellowLight, text("YellowLight")),
-               }),
-           }) |
-           hcenter | border;
+    auto basic_color_display =
+        vbox({
+            text("16 color palette:"),
+            separator(),
+            hbox({
+                vbox({
+                    color(Color::Default, text("Default")),
+                    color(Color::Black, text("Black")),
+                    color(Color::GrayDark, text("GrayDark")),
+                    color(Color::GrayLight, text("GrayLight")),
+                    color(Color::White, text("White")),
+                    color(Color::Blue, text("Blue")),
+                    color(Color::BlueLight, text("BlueLight")),
+                    color(Color::Cyan, text("Cyan")),
+                    color(Color::CyanLight, text("CyanLight")),
+                    color(Color::Green, text("Green")),
+                    color(Color::GreenLight, text("GreenLight")),
+                    color(Color::Magenta, text("Magenta")),
+                    color(Color::MagentaLight, text("MagentaLight")),
+                    color(Color::Red, text("Red")),
+                    color(Color::RedLight, text("RedLight")),
+                    color(Color::Yellow, text("Yellow")),
+                    color(Color::YellowLight, text("YellowLight")),
+                }),
+                vbox({
+                    bgcolor(Color::Default, text("Default")),
+                    bgcolor(Color::Black, text("Black")),
+                    bgcolor(Color::GrayDark, text("GrayDark")),
+                    bgcolor(Color::GrayLight, text("GrayLight")),
+                    bgcolor(Color::White, text("White")),
+                    bgcolor(Color::Blue, text("Blue")),
+                    bgcolor(Color::BlueLight, text("BlueLight")),
+                    bgcolor(Color::Cyan, text("Cyan")),
+                    bgcolor(Color::CyanLight, text("CyanLight")),
+                    bgcolor(Color::Green, text("Green")),
+                    bgcolor(Color::GreenLight, text("GreenLight")),
+                    bgcolor(Color::Magenta, text("Magenta")),
+                    bgcolor(Color::MagentaLight, text("MagentaLight")),
+                    bgcolor(Color::Red, text("Red")),
+                    bgcolor(Color::RedLight, text("RedLight")),
+                    bgcolor(Color::Yellow, text("Yellow")),
+                    bgcolor(Color::YellowLight, text("YellowLight")),
+                }),
+            }),
+        }) |
+        border;
+
+    auto palette_256_color_display = text("256 colors palette:");
+    {
+      std::vector<std::vector<ColorInfo>> info_columns = ColorInfoSorted2D();
+      Elements columns;
+      for (auto& column : info_columns) {
+        Elements column_elements;
+        for (auto& it : column) {
+          column_elements.push_back(
+              text("   ") | bgcolor(Color(Color::Palette256(it.index_256))));
+        }
+        columns.push_back(hbox(std::move(column_elements)));
+      }
+      palette_256_color_display = vbox({
+                                      palette_256_color_display,
+                                      separator(),
+                                      vbox(columns),
+                                  }) |
+                                  border;
+    }
+
+    // True color display.
+    auto true_color_display = text("TrueColors: 24bits:");
+    {
+      int saturation = 255;
+      Elements array;
+      for (int value = 0; value < 255; value += 16) {
+        Elements line;
+        for (int hue = 0; hue < 255; hue += 6) {
+          line.push_back(text("▀")                                    //
+                         | color(Color::HSV(hue, saturation, value))  //
+                         | bgcolor(Color::HSV(hue, saturation, value + 8)));
+        }
+        array.push_back(hbox(std::move(line)));
+      }
+      true_color_display = vbox({
+                               true_color_display,
+                               separator(),
+                               vbox(std::move(array)),
+                           }) |
+                           border;
+    }
+
+    return flexbox(
+        {
+            basic_color_display,
+            palette_256_color_display,
+            true_color_display,
+        },
+        FlexboxConfig().SetGap(1, 1));
   });
 
   // ---------------------------------------------------------------------------
   // Gauges
   // ---------------------------------------------------------------------------
   auto render_gauge = [&shift](int delta) {
-    float progress = (shift + delta) % 1000 / 1000.f;
+    float progress = (shift + delta) % 500 / 500.f;
     return hbox({
         text(std::to_string(int(progress * 100)) + "% ") |
             size(WIDTH, EQUAL, 5),
@@ -331,25 +391,24 @@ int main(int argc, const char* argv[]) {
 
   auto gauge_component = Renderer([render_gauge] {
     return vbox({
-               render_gauge(0) | color(Color::Black),
-               render_gauge(100) | color(Color::GrayDark),
-               render_gauge(50) | color(Color::GrayLight),
-               render_gauge(6894) | color(Color::White),
-               separator(),
-               render_gauge(6841) | color(Color::Blue),
-               render_gauge(9813) | color(Color::BlueLight),
-               render_gauge(98765) | color(Color::Cyan),
-               render_gauge(98) | color(Color::CyanLight),
-               render_gauge(9846) | color(Color::Green),
-               render_gauge(1122) | color(Color::GreenLight),
-               render_gauge(84) | color(Color::Magenta),
-               render_gauge(645) | color(Color::MagentaLight),
-               render_gauge(568) | color(Color::Red),
-               render_gauge(2222) | color(Color::RedLight),
-               render_gauge(220) | color(Color::Yellow),
-               render_gauge(348) | color(Color::YellowLight),
-           }) |
-           border;
+        render_gauge(0) | color(Color::Black),
+        render_gauge(100) | color(Color::GrayDark),
+        render_gauge(50) | color(Color::GrayLight),
+        render_gauge(6894) | color(Color::White),
+        separator(),
+        render_gauge(6841) | color(Color::Blue),
+        render_gauge(9813) | color(Color::BlueLight),
+        render_gauge(98765) | color(Color::Cyan),
+        render_gauge(98) | color(Color::CyanLight),
+        render_gauge(9846) | color(Color::Green),
+        render_gauge(1122) | color(Color::GreenLight),
+        render_gauge(84) | color(Color::Magenta),
+        render_gauge(645) | color(Color::MagentaLight),
+        render_gauge(568) | color(Color::Red),
+        render_gauge(2222) | color(Color::RedLight),
+        render_gauge(220) | color(Color::Yellow),
+        render_gauge(348) | color(Color::YellowLight),
+    });
   });
 
   // ---------------------------------------------------------------------------
@@ -363,48 +422,36 @@ int main(int argc, const char* argv[]) {
   };
 
   auto paragraph_renderer_left = Renderer([&] {
-    auto title_style = bold | bgcolor(Color::Blue) | color(Color::Black);
     std::string str =
         "Lorem Ipsum is simply dummy text of the printing and typesetting "
         "industry. Lorem Ipsum has been the industry's standard dummy text "
         "ever since the 1500s, when an unknown printer took a galley of type "
         "and scrambled it to make a type specimen book.";
     return vbox({
-               // [ Left ]
-               text("Align left:") | title_style,
-               paragraphAlignLeft(str),
-               // [ Center ]
-               text("Align center:") | title_style,
-               paragraphAlignCenter(str),
-               // [ Right ]
-               text("Align right:") | title_style,
-               paragraphAlignRight(str),
-               // [ Justify]
-               text("Align justify:") | title_style,
-               paragraphAlignJustify(str),
-               // [ Side by side ]
-               text("Side by side:") | title_style,
-               hbox({
-                   paragraph(str),
-                   separator() | color(Color::Blue),
-                   paragraph(str),
-               }),
-               // [ Misc ]
-               text("Elements with different size:") | title_style,
-               flexbox({
-                   make_box(10, 5),
-                   make_box(9, 4),
-                   make_box(8, 4),
-                   make_box(6, 3),
-                   make_box(10, 5),
-                   make_box(9, 4),
-                   make_box(8, 4),
-                   make_box(6, 3),
-                   make_box(10, 5),
-                   make_box(9, 4),
-                   make_box(8, 4),
-                   make_box(6, 3),
-               }),
+               window(text("Align left:"), paragraphAlignLeft(str)),
+               window(text("Align center:"), paragraphAlignCenter(str)),
+               window(text("Align right:"), paragraphAlignRight(str)),
+               window(text("Align justify:"), paragraphAlignJustify(str)),
+               window(text("Side by side"), hbox({
+                                                paragraph(str),
+                                                separator(),
+                                                paragraph(str),
+                                            })),
+               window(text("Elements with different size:"),
+                      flexbox({
+                          make_box(10, 5),
+                          make_box(9, 4),
+                          make_box(8, 4),
+                          make_box(6, 3),
+                          make_box(10, 5),
+                          make_box(9, 4),
+                          make_box(8, 4),
+                          make_box(6, 3),
+                          make_box(10, 5),
+                          make_box(9, 4),
+                          make_box(8, 4),
+                          make_box(6, 3),
+                      })),
            }) |
            vscroll_indicator | yframe | flex;
   });
@@ -420,7 +467,7 @@ int main(int argc, const char* argv[]) {
                          &paragraph_renderer_split_position);
   auto paragraph_renderer_group_renderer =
       Renderer(paragraph_renderer_group,
-               [&] { return paragraph_renderer_group->Render() | border; });
+               [&] { return paragraph_renderer_group->Render(); });
 
   // ---------------------------------------------------------------------------
   // Tabs
@@ -430,7 +477,8 @@ int main(int argc, const char* argv[]) {
   std::vector<std::string> tab_entries = {
       "htop", "color", "spinner", "gauge", "compiler", "paragraph",
   };
-  auto tab_selection = Toggle(&tab_entries, &tab_index);
+  auto tab_selection =
+      Menu(&tab_entries, &tab_index, MenuOption::HorizontalAnimated());
   auto tab_content = Container::Tab(
       {
           htop,
@@ -450,18 +498,23 @@ int main(int argc, const char* argv[]) {
   auto main_renderer = Renderer(main_container, [&] {
     return vbox({
         text("FTXUI Demo") | bold | hcenter,
-        tab_selection->Render() | hcenter,
+        tab_selection->Render(),
         tab_content->Render() | flex,
     });
   });
 
-  bool refresh_ui_continue = true;
+  std::atomic<bool> refresh_ui_continue = true;
   std::thread refresh_ui([&] {
     while (refresh_ui_continue) {
       using namespace std::chrono_literals;
       std::this_thread::sleep_for(0.05s);
-      shift++;
-      screen.PostEvent(Event::Custom);
+      // The |shift| variable belong to the main thread. `screen.Post(task)`
+      // will execute the update on the thread where |screen| lives (e.g. the
+      // main thread). Using `screen.Post(task)` is threadsafe.
+      screen.Post([&] { shift++; });
+      // After updating the state, request a new frame to be drawn. This is done
+      // by simulating a new "custom" event to be handled.
+      screen.Post(Event::Custom);
     }
   });
 
@@ -471,7 +524,3 @@ int main(int argc, const char* argv[]) {
 
   return 0;
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

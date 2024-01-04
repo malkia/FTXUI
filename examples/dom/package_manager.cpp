@@ -1,8 +1,11 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <chrono>                  // for operator""s, chrono_literals
 #include <ftxui/dom/elements.hpp>  // for operator|, text, Element, hbox, bold, color, filler, separator, vbox, window, gauge, Fit, size, dim, EQUAL, WIDTH
 #include <ftxui/screen/screen.hpp>  // for Full, Screen
 #include <iostream>                 // for cout, endl, ostream
-#include <list>  // for list, operator!=, _List_iterator, _List_iterator<>::_Self
+#include <list>  // for list, operator==, _List_iterator, _List_iterator<>::_Self
 #include <memory>   // for allocator, shared_ptr, allocator_traits<>::value_type
 #include <string>   // for string, operator<<, to_string
 #include <thread>   // for sleep_for
@@ -12,7 +15,7 @@
 #include "ftxui/dom/node.hpp"  // for Render
 #include "ftxui/screen/color.hpp"  // for Color, Color::Green, Color::Red, Color::RedLight, ftxui
 
-int main(int argc, const char* argv[]) {
+int main() {
   using namespace ftxui;
 
   struct Task {
@@ -41,7 +44,7 @@ int main(int argc, const char* argv[]) {
 
   int remaining_threads = 12;
 
-  int nb_queued = remaining_tasks.size();
+  int nb_queued = (int)remaining_tasks.size();
   int nb_active = 0;
   int nb_done = 0;
 
@@ -143,7 +146,3 @@ int main(int argc, const char* argv[]) {
   }
   std::cout << std::endl;
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

@@ -1,10 +1,16 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include "ftxui/screen/color_info.hpp"
+
+#include <array>
+
 #include "ftxui/screen/color.hpp"  // for Color, Color::Palette16, Color::Palette256
 
 namespace ftxui {
 
 // clang-format off
-const ColorInfo palette256[] = {
+const std::array<ColorInfo, 256> palette256 = {{
      {"Black"              , 0   , 0  , 0   , 0   , 0   , 0   , 0   , 0   } ,
      {"Red"                , 1   , 1  , 128 , 0   , 0   , 0   , 255 , 128 } ,
      {"Green"              , 2   , 2  , 0   , 128 , 0   , 85  , 255 , 128 } ,
@@ -261,19 +267,15 @@ const ColorInfo palette256[] = {
      {"Grey85"             , 253 , 7  , 218 , 218 , 218 , 0   , 0   , 218 } ,
      {"Grey89"             , 254 , 15 , 228 , 228 , 228 , 0   , 0   , 228 } ,
      {"Grey93"             , 255 , 15 , 238 , 238 , 238 , 0   , 0   , 238 } ,
-} ;
+}};
 
 ColorInfo GetColorInfo(Color::Palette256 index) {
-  return palette256[int(index)];
+  return palette256[index]; // NOLINT;
 }
 
 ColorInfo GetColorInfo(Color::Palette16 index) {
-  return palette256[int(index)];
+  return palette256[index]; // NOLINT;
 }
 // clang-format off
 
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

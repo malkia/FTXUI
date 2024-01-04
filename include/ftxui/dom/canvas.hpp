@@ -1,7 +1,10 @@
+// Copyright 2021 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #ifndef FTXUI_DOM_CANVAS_HPP
 #define FTXUI_DOM_CANVAS_HPP
 
-#include <stddef.h>       // for size_t
+#include <cstddef>        // for size_t
 #include <functional>     // for function
 #include <string>         // for string
 #include <unordered_map>  // for unordered_map
@@ -9,11 +12,17 @@
 #include "ftxui/screen/color.hpp"   // for Color
 #include "ftxui/screen/screen.hpp"  // for Pixel
 
+#ifdef DrawText
+// Workaround for WinUsr.h (via Windows.h) defining macros that break things.
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-drawtext
+#undef DrawText
+#endif
+
 namespace ftxui {
 
 struct Canvas {
  public:
-  Canvas() {}
+  Canvas() = default;
   Canvas(int width, int height);
 
   // Getters:
@@ -114,7 +123,8 @@ struct Canvas {
 
   struct XYHash {
     size_t operator()(const XY& xy) const {
-      return static_cast<size_t>(xy.x * 1024 + xy.y);
+      constexpr size_t shift = 1024;
+      return size_t(xy.x) * shift + size_t(xy.y);
     }
   };
 
@@ -126,7 +136,3 @@ struct Canvas {
 }  // namespace ftxui
 
 #endif  // FTXUI_DOM_CANVAS_HPP
-
-// Copyright 2021 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

@@ -1,13 +1,15 @@
-#include <gtest/gtest-message.h>    // for Message
-#include <gtest/gtest-test-part.h>  // for TestPartResult
-#include <gtest/gtest.h>
-#include <thread>                   // for thread
-#include <utility>                  // for move
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
+#include <string>   // for string
+#include <thread>   // for thread
+#include <utility>  // for move
 
 #include "ftxui/component/receiver.hpp"
-#include "gtest/gtest_pred_impl.h"  // for AssertionResult, Test, EXPECT_EQ
+#include "gtest/gtest.h"  // for AssertionResult, Message, Test, TestPartResult, EXPECT_EQ, EXPECT_TRUE, EXPECT_FALSE, TEST
 
-using namespace ftxui;
+// NOLINTBEGIN
+namespace ftxui {
 
 TEST(Receiver, Basic) {
   auto receiver = MakeReceiver<char>();
@@ -76,6 +78,5 @@ TEST(Receiver, BasicWithThread) {
   t23.join();
 }
 
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
+}  // namespace ftxui
+// NOLINTEND

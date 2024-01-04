@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <memory>  // for allocator, shared_ptr, __shared_ptr_access
 #include <string>  // for operator+, char_traits, to_string, string
 #include <vector>  // for vector
@@ -31,9 +34,9 @@ Element make_grid() {
   return gridbox(rows);
 };
 
-int main(int argc, const char* argv[]) {
-  float focus_x = 0.0f;
-  float focus_y = 0.0f;
+int main() {
+  float focus_x = 0.5f;
+  float focus_y = 0.5f;
 
   auto slider_x = Slider("x", &focus_x, 0.f, 1.f, 0.01f);
   auto slider_y = Slider("y", &focus_y, 0.f, 1.f, 0.01f);
@@ -64,7 +67,3 @@ int main(int argc, const char* argv[]) {
 
   return 0;
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

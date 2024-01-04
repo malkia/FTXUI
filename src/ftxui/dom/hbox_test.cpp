@@ -1,17 +1,17 @@
-#include <gtest/gtest-message.h>  // for Message
-#include <gtest/gtest-test-part.h>  // for SuiteApiResolver, TestFactoryImpl, TestPartResult
-#include <gtest/gtest.h>
-#include <string>                   // for allocator, basic_string, string
-#include <vector>                   // for vector
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
+#include <gtest/gtest.h>  // for Test, TestInfo (ptr only), EXPECT_EQ, Message, TEST, TestPartResult
+#include <cstddef>  // for size_t
+#include <string>   // for allocator, basic_string, string
+#include <vector>   // for vector
 
 #include "ftxui/dom/elements.hpp"  // for text, operator|, Element, flex_grow, flex_shrink, hbox
 #include "ftxui/dom/node.hpp"       // for Render
-#include "ftxui/screen/color.hpp"   // for ftxui
 #include "ftxui/screen/screen.hpp"  // for Screen
-#include "gtest/gtest_pred_impl.h"  // for Test, EXPECT_EQ, TEST
 
-using namespace ftxui;
-using namespace ftxui;
+// NOLINTBEGIN
+namespace ftxui {
 
 TEST(HBoxTest, NoFlex_NoFlex_NoFlex) {
   auto root = hbox({
@@ -34,7 +34,7 @@ TEST(HBoxTest, NoFlex_NoFlex_NoFlex) {
       "012abcABC ",   //
       "012abcABC  ",  //
   };
-  for (int i = 0; i < expectations.size(); ++i) {
+  for (size_t i = 0; i < expectations.size(); ++i) {
     Screen screen(i, 1);
     Render(screen, root);
     EXPECT_EQ(expectations[i], screen.ToString());
@@ -62,7 +62,7 @@ TEST(HBoxTest, FlexGrow_NoFlex_NoFlex) {
       "012 abcABC",   //
       "012  abcABC",  //
   };
-  for (int i = 0; i < expectations.size(); ++i) {
+  for (size_t i = 0; i < expectations.size(); ++i) {
     Screen screen(i, 1);
     Render(screen, root);
     EXPECT_EQ(expectations[i], screen.ToString());
@@ -90,7 +90,7 @@ TEST(HBoxTest, NoFlex_FlexGrow_NoFlex) {
       "012abc ABC",   //
       "012abc  ABC",  //
   };
-  for (int i = 0; i < expectations.size(); ++i) {
+  for (size_t i = 0; i < expectations.size(); ++i) {
     Screen screen(i, 1);
     Render(screen, root);
     EXPECT_EQ(expectations[i], screen.ToString());
@@ -118,7 +118,7 @@ TEST(HBoxTest, NoFlex_NoFlex_FlexGrow) {
       "012abcABC ",   //
       "012abcABC  ",  //
   };
-  for (int i = 0; i < expectations.size(); ++i) {
+  for (size_t i = 0; i < expectations.size(); ++i) {
     Screen screen(i, 1);
     Render(screen, root);
     EXPECT_EQ(expectations[i], screen.ToString());
@@ -148,7 +148,7 @@ TEST(HBoxTest, FlexGrow_NoFlex_FlexGrow) {
       "012 abcABC  ",   //
       "012  abcABC  ",  //
   };
-  for (int i = 0; i < expectations.size(); ++i) {
+  for (size_t i = 0; i < expectations.size(); ++i) {
     Screen screen(i, 1);
     Render(screen, root);
     EXPECT_EQ(expectations[i], screen.ToString());
@@ -180,7 +180,7 @@ TEST(HBoxTest, FlexGrow_FlexGrow_FlexGrow) {
       "012 abc  ABC  ",   //
       "012  abc  ABC  ",  //
   };
-  for (int i = 0; i < expectations.size(); ++i) {
+  for (size_t i = 0; i < expectations.size(); ++i) {
     Screen screen(i, 1);
     Render(screen, root);
     EXPECT_EQ(expectations[i], screen.ToString());
@@ -210,7 +210,7 @@ TEST(HBoxTest, FlexShrink_NoFlex_NoFlex) {
       "012abcABC ",   //
       "012abcABC  ",  //
   };
-  for (int i = 0; i < expectations.size(); ++i) {
+  for (size_t i = 0; i < expectations.size(); ++i) {
     Screen screen(i, 1);
     Render(screen, root);
     EXPECT_EQ(expectations[i], screen.ToString());
@@ -238,7 +238,7 @@ TEST(HBoxTest, NoFlex_FlexShrink_NoFlex) {
       "012abcABC ",   //
       "012abcABC  ",  //
   };
-  for (int i = 0; i < expectations.size(); ++i) {
+  for (size_t i = 0; i < expectations.size(); ++i) {
     Screen screen(i, 1);
     Render(screen, root);
     EXPECT_EQ(expectations[i], screen.ToString());
@@ -266,7 +266,7 @@ TEST(HBoxTest, NoFlex_NoFlex_FlexShrink) {
       "012abcABC ",   //
       "012abcABC  ",  //
   };
-  for (int i = 0; i < expectations.size(); ++i) {
+  for (size_t i = 0; i < expectations.size(); ++i) {
     Screen screen(i, 1);
     Render(screen, root);
     EXPECT_EQ(expectations[i], screen.ToString());
@@ -293,7 +293,7 @@ TEST(HBoxTest, FlexShrink_NoFlex_FlexShrink) {
       "012abcABC",   //
       "012abcABC ",  //
   };
-  for (int i = 0; i < expectations.size(); ++i) {
+  for (size_t i = 0; i < expectations.size(); ++i) {
     Screen screen(i, 1);
     Render(screen, root);
     EXPECT_EQ(expectations[i], screen.ToString());
@@ -322,7 +322,7 @@ TEST(HBoxTest, FlexShrink_FlexShrink_FlexShrink) {
       "012abcABC  ",   //
       "012abcABC   ",  //
   };
-  for (int i = 0; i < expectations.size(); ++i) {
+  for (size_t i = 0; i < expectations.size(); ++i) {
     Screen screen(i, 1);
     Render(screen, root);
     EXPECT_EQ(expectations[i], screen.ToString());
@@ -351,13 +351,12 @@ TEST(HBoxTest, FlexGrow_NoFlex_FlewShrink) {
       "012  abcABC",   //
       "012   abcABC",  //
   };
-  for (int i = 0; i < expectations.size(); ++i) {
+  for (size_t i = 0; i < expectations.size(); ++i) {
     Screen screen(i, 1);
     Render(screen, root);
     EXPECT_EQ(expectations[i], screen.ToString());
   }
 }
 
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
+}  // namespace ftxui
+// NOLINTEND

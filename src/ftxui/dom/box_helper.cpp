@@ -1,9 +1,11 @@
+// Copyright 2021 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include "ftxui/dom/box_helper.hpp"
 
 #include <algorithm>  // for max
 
-namespace ftxui {
-namespace box_helper {
+namespace ftxui::box_helper {
 
 namespace {
 // Called when the size allowed is greater than the requested size. This
@@ -13,7 +15,7 @@ void ComputeGrow(std::vector<Element>* elements,
                  int extra_space,
                  int flex_grow_sum) {
   for (Element& element : *elements) {
-    int added_space =
+    const int added_space =
         extra_space * element.flex_grow / std::max(flex_grow_sum, 1);
     extra_space -= added_space;
     flex_grow_sum -= element.flex_grow;
@@ -28,8 +30,8 @@ void ComputeShrinkEasy(std::vector<Element>* elements,
                        int extra_space,
                        int flex_shrink_sum) {
   for (Element& element : *elements) {
-    int added_space = extra_space * element.min_size * element.flex_shrink /
-                      std::max(flex_shrink_sum, 1);
+    const int added_space = extra_space * element.min_size *
+                            element.flex_shrink / std::max(flex_shrink_sum, 1);
     extra_space -= added_space;
     flex_shrink_sum -= element.flex_shrink * element.min_size;
     element.size = element.min_size + added_space;
@@ -44,12 +46,12 @@ void ComputeShrinkHard(std::vector<Element>* elements,
                        int extra_space,
                        int size) {
   for (Element& element : *elements) {
-    if (element.flex_shrink) {
+    if (element.flex_shrink != 0) {
       element.size = 0;
       continue;
     }
 
-    int added_space = extra_space * element.min_size / std::max(1, size);
+    const int added_space = extra_space * element.min_size / std::max(1, size);
     extra_space -= added_space;
     size -= element.min_size;
 
@@ -68,24 +70,22 @@ void Compute(std::vector<Element>* elements, int target_size) {
   for (auto& element : *elements) {
     flex_grow_sum += element.flex_grow;
     flex_shrink_sum += element.min_size * element.flex_shrink;
-    if (element.flex_shrink)
+    if (element.flex_shrink != 0) {
       flex_shrink_size += element.min_size;
+    }
     size += element.min_size;
   }
 
-  int extra_space = target_size - size;
-  if (extra_space >= 0)
+  const int extra_space = target_size - size;
+  if (extra_space >= 0) {
     ComputeGrow(elements, extra_space, flex_grow_sum);
-  else if (flex_shrink_size + extra_space >= 0)
+  } else if (flex_shrink_size + extra_space >= 0) {
     ComputeShrinkEasy(elements, extra_space, flex_shrink_sum);
-  else
+
+  } else {
     ComputeShrinkHard(elements, extra_space + flex_shrink_size,
                       size - flex_shrink_size);
+  }
 }
 
-}  // namespace box_helper
-}  // namespace ftxui
-
-// Copyright 2021 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
+}  // namespace ftxui::box_helper

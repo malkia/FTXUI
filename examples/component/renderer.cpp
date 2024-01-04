@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <memory>  // for shared_ptr, allocator, __shared_ptr_access
 
 #include "ftxui/component/captured_mouse.hpp"  // for ftxui
@@ -7,7 +10,7 @@
 #include "ftxui/dom/elements.hpp"  // for operator|, Element, text, bold, border, center, color
 #include "ftxui/screen/color.hpp"  // for Color, Color::Red
 
-int main(int argc, const char* argv[]) {
+int main() {
   using namespace ftxui;
   auto screen = ScreenInteractive::FitComponent();
 
@@ -43,7 +46,3 @@ int main(int argc, const char* argv[]) {
       renderer_wrap,
   }));
 }
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

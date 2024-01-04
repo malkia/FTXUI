@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <memory>   // for make_shared
 #include <utility>  // for move
 
@@ -9,6 +12,7 @@
 
 namespace ftxui {
 
+namespace {
 using ftxui::Screen;
 
 class ClearUnder : public NodeDecorator {
@@ -24,17 +28,14 @@ class ClearUnder : public NodeDecorator {
     Node::Render(screen);
   }
 };
+}  // namespace
 
 /// @brief Before drawing |child|, clear the pixels below. This is useful in
 //         combinaison with dbox.
 /// @see ftxui::dbox
 /// @ingroup dom
-Element clear_under(Element child) {
-  return std::make_shared<ClearUnder>(std::move(child));
+Element clear_under(Element element) {
+  return std::make_shared<ClearUnder>(std::move(element));
 }
 
 }  // namespace ftxui
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

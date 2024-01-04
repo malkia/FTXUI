@@ -1,3 +1,6 @@
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <memory>   // for make_shared
 #include <utility>  // for move
 
@@ -9,6 +12,7 @@
 
 namespace ftxui {
 
+namespace {
 class BgColor : public NodeDecorator {
  public:
   BgColor(Element child, Color color)
@@ -42,6 +46,7 @@ class FgColor : public NodeDecorator {
 
   Color color_;
 };
+}  // namespace
 
 /// @brief Set the foreground color of an element.
 /// @param color The color of the output element.
@@ -102,7 +107,3 @@ Decorator bgcolor(Color color) {
 }
 
 }  // namespace ftxui
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

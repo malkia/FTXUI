@@ -1,21 +1,26 @@
-#include <gtest/gtest-message.h>  // for Message
-#include <gtest/gtest-test-part.h>  // for TestPartResult, SuiteApiResolver, TestFactoryImpl
-#include <gtest/gtest.h>
-#include <string>                   // for allocator, string
-
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include "ftxui/screen/string.hpp"
-#include "gtest/gtest_pred_impl.h"  // for EXPECT_EQ, Test, TEST
+#include <gtest/gtest.h>
+#include <string>  // for allocator, string
+#include "ftxui/screen/string_internal.hpp"
 
-using namespace ftxui;
+namespace ftxui {
 
 TEST(StringTest, StringWidth) {
   // Basic:
   EXPECT_EQ(0, string_width(""));
   EXPECT_EQ(1, string_width("a"));
   EXPECT_EQ(2, string_width("ab"));
+  EXPECT_EQ(1, string_width("⬤"));
+
   // Fullwidth glyphs:
   EXPECT_EQ(2, string_width("测"));
   EXPECT_EQ(4, string_width("测试"));
+  EXPECT_EQ(2, string_width("⚫"));
+  EXPECT_EQ(2, string_width("🪐"));
+
   // Combining characters:
   EXPECT_EQ(1, string_width("ā"));
   EXPECT_EQ(1, string_width("a⃒"));
@@ -60,41 +65,41 @@ TEST(StringTest, GlyphCount) {
   EXPECT_EQ(GlyphCount("a\1a"), 2);
 }
 
-TEST(StringTest, GlyphPosition) {
+TEST(StringTest, GlyphIterate) {
   // Basic:
-  EXPECT_EQ(GlyphPosition("", -1), 0);
-  EXPECT_EQ(GlyphPosition("", 0), 0);
-  EXPECT_EQ(GlyphPosition("", 1), 0);
-  EXPECT_EQ(GlyphPosition("a", 0), 0);
-  EXPECT_EQ(GlyphPosition("a", 1), 1);
-  EXPECT_EQ(GlyphPosition("ab", 0), 0);
-  EXPECT_EQ(GlyphPosition("ab", 1), 1);
-  EXPECT_EQ(GlyphPosition("ab", 2), 2);
-  EXPECT_EQ(GlyphPosition("abc", 0), 0);
-  EXPECT_EQ(GlyphPosition("abc", 1), 1);
-  EXPECT_EQ(GlyphPosition("abc", 2), 2);
-  EXPECT_EQ(GlyphPosition("abc", 3), 3);
+  EXPECT_EQ(GlyphIterate("", -1), 0);
+  EXPECT_EQ(GlyphIterate("", 0), 0);
+  EXPECT_EQ(GlyphIterate("", 1), 0);
+  EXPECT_EQ(GlyphIterate("a", 0), 0);
+  EXPECT_EQ(GlyphIterate("a", 1), 1);
+  EXPECT_EQ(GlyphIterate("ab", 0), 0);
+  EXPECT_EQ(GlyphIterate("ab", 1), 1);
+  EXPECT_EQ(GlyphIterate("ab", 2), 2);
+  EXPECT_EQ(GlyphIterate("abc", 0), 0);
+  EXPECT_EQ(GlyphIterate("abc", 1), 1);
+  EXPECT_EQ(GlyphIterate("abc", 2), 2);
+  EXPECT_EQ(GlyphIterate("abc", 3), 3);
   // Fullwidth glyphs:
-  EXPECT_EQ(GlyphPosition("测", 0), 0);
-  EXPECT_EQ(GlyphPosition("测", 1), 3);
-  EXPECT_EQ(GlyphPosition("测试", 0), 0);
-  EXPECT_EQ(GlyphPosition("测试", 1), 3);
-  EXPECT_EQ(GlyphPosition("测试", 2), 6);
-  EXPECT_EQ(GlyphPosition("测试", 1, 3), 6);
-  EXPECT_EQ(GlyphPosition("测试", 1, 0), 3);
+  EXPECT_EQ(GlyphIterate("测", 0), 0);
+  EXPECT_EQ(GlyphIterate("测", 1), 3);
+  EXPECT_EQ(GlyphIterate("测试", 0), 0);
+  EXPECT_EQ(GlyphIterate("测试", 1), 3);
+  EXPECT_EQ(GlyphIterate("测试", 2), 6);
+  EXPECT_EQ(GlyphIterate("测试", 1, 3), 6);
+  EXPECT_EQ(GlyphIterate("测试", 1, 0), 3);
   // Combining characters:
-  EXPECT_EQ(GlyphPosition("ā", 0), 0);
-  EXPECT_EQ(GlyphPosition("ā", 1), 3);
-  EXPECT_EQ(GlyphPosition("a⃒a̗ā", 0), 0);
-  EXPECT_EQ(GlyphPosition("a⃒a̗ā", 1), 4);
-  EXPECT_EQ(GlyphPosition("a⃒a̗ā", 2), 7);
-  EXPECT_EQ(GlyphPosition("a⃒a̗ā", 3), 10);
+  EXPECT_EQ(GlyphIterate("ā", 0), 0);
+  EXPECT_EQ(GlyphIterate("ā", 1), 3);
+  EXPECT_EQ(GlyphIterate("a⃒a̗ā", 0), 0);
+  EXPECT_EQ(GlyphIterate("a⃒a̗ā", 1), 4);
+  EXPECT_EQ(GlyphIterate("a⃒a̗ā", 2), 7);
+  EXPECT_EQ(GlyphIterate("a⃒a̗ā", 3), 10);
   // Control characters:
-  EXPECT_EQ(GlyphPosition("\1", 0), 0);
-  EXPECT_EQ(GlyphPosition("\1", 1), 1);
-  EXPECT_EQ(GlyphPosition("a\1a", 0), 0);
-  EXPECT_EQ(GlyphPosition("a\1a", 1), 2);
-  EXPECT_EQ(GlyphPosition("a\1a", 2), 3);
+  EXPECT_EQ(GlyphIterate("\1", 0), 0);
+  EXPECT_EQ(GlyphIterate("\1", 1), 1);
+  EXPECT_EQ(GlyphIterate("a\1a", 0), 0);
+  EXPECT_EQ(GlyphIterate("a\1a", 1), 2);
+  EXPECT_EQ(GlyphIterate("a\1a", 2), 3);
 }
 
 TEST(StringTest, CellToGlyphIndex) {
@@ -121,6 +126,42 @@ TEST(StringTest, CellToGlyphIndex) {
   EXPECT_EQ(combining[2], 2);
 }
 
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
+TEST(StringTest, Utf8ToWordBreakProperty) {
+  using T = std::vector<WordBreakProperty>;
+  using P = WordBreakProperty;
+  EXPECT_EQ(Utf8ToWordBreakProperty("a"), T({P::ALetter}));
+  EXPECT_EQ(Utf8ToWordBreakProperty("0"), T({P::Numeric}));
+  EXPECT_EQ(Utf8ToWordBreakProperty("א"), T({P::Hebrew_Letter}));
+  EXPECT_EQ(Utf8ToWordBreakProperty("ㇰ"), T({P::Katakana}));
+  EXPECT_EQ(Utf8ToWordBreakProperty(" "), T({P::WSegSpace}));
+  EXPECT_EQ(Utf8ToWordBreakProperty("\""), T({P::Double_Quote}));
+  EXPECT_EQ(Utf8ToWordBreakProperty("'"), T({P::Single_Quote}));
+  EXPECT_EQ(Utf8ToWordBreakProperty(":"), T({P::MidLetter}));
+  EXPECT_EQ(Utf8ToWordBreakProperty("."), T({P::MidNumLet}));
+  EXPECT_EQ(Utf8ToWordBreakProperty("\r"), T({}));  // FIXME
+  EXPECT_EQ(Utf8ToWordBreakProperty("\n"), T({P::LF}));
+}
+
+TEST(StringTest, to_string) {
+  EXPECT_EQ(to_string(L"hello"), "hello");
+  EXPECT_EQ(to_string(L"€"), "€");
+  EXPECT_EQ(to_string(L"ÿ"), "ÿ");
+  EXPECT_EQ(to_string(L"߿"), "߿");
+  EXPECT_EQ(to_string(L"ɰɱ"), "ɰɱ");
+  EXPECT_EQ(to_string(L"«»"), "«»");
+  EXPECT_EQ(to_string(L"嵰嵲嵫"), "嵰嵲嵫");
+  EXPECT_EQ(to_string(L"🎅🎄"), "🎅🎄");
+}
+
+TEST(StringTest, to_wstring) {
+  EXPECT_EQ(to_wstring(std::string("hello")), L"hello");
+  EXPECT_EQ(to_wstring(std::string("€")), L"€");
+  EXPECT_EQ(to_wstring(std::string("ÿ")), L"ÿ");
+  EXPECT_EQ(to_wstring(std::string("߿")), L"߿");
+  EXPECT_EQ(to_wstring(std::string("ɰɱ")), L"ɰɱ");
+  EXPECT_EQ(to_wstring(std::string("«»")), L"«»");
+  EXPECT_EQ(to_wstring(std::string("嵰嵲嵫")), L"嵰嵲嵫");
+  EXPECT_EQ(to_wstring(std::string("🎅🎄")), L"🎅🎄");
+}
+
+}  // namespace ftxui

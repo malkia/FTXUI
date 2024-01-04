@@ -1,14 +1,16 @@
-#include <gtest/gtest-message.h>  // for Message
-#include <gtest/gtest-test-part.h>  // for SuiteApiResolver, TestFactoryImpl, TestPartResult
-#include <gtest/gtest.h>
+// Copyright 2021 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
+#include <gtest/gtest.h>  // for Test, TestInfo (ptr only), TEST, EXPECT_EQ, Message, TestPartResult
 #include <csignal>  // for raise, SIGABRT, SIGFPE, SIGILL, SIGINT, SIGSEGV, SIGTERM
+#include <ftxui/component/event.hpp>  // for Event, Event::Custom
+#include <tuple>                      // for _Swallow_assign, ignore
 
 #include "ftxui/component/component.hpp"  // for Renderer
 #include "ftxui/component/screen_interactive.hpp"
-#include "ftxui/dom/elements.hpp"   // for text, Element
-#include "gtest/gtest_pred_impl.h"  // for Test, TEST, EXPECT_EQ
+#include "ftxui/dom/elements.hpp"  // for text, Element
 
-using namespace ftxui;
+namespace ftxui {
 
 namespace {
 bool TestSignal(int signal) {
@@ -16,7 +18,7 @@ bool TestSignal(int signal) {
   // The tree of components. This defines how to navigate using the keyboard.
   auto component = Renderer([&] {
     called++;
-    std::raise(signal);
+    std::ignore = std::raise(signal);
     called++;
     return text("");
   });
@@ -48,6 +50,18 @@ TEST(ScreenInteractive, Signal_SIGFPE) {
   TestSignal(SIGFPE);
 }
 
-// Copyright 2021 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
+// Regression test for:
+// https://github.com/ArthurSonzogni/FTXUI/issues/402
+TEST(ScreenInteractive, PostEventToNonActive) {
+  auto screen = ScreenInteractive::FitComponent();
+  screen.Post(Event::Custom);
+}
+
+// Regression test for:
+// https://github.com/ArthurSonzogni/FTXUI/issues/402
+TEST(ScreenInteractive, PostTaskToNonActive) {
+  auto screen = ScreenInteractive::FitComponent();
+  screen.Post([] {});
+}
+
+}  // namespace ftxui

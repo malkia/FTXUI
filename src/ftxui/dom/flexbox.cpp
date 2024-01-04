@@ -1,5 +1,8 @@
-#include <stddef.h>   // for size_t
+// Copyright 2020 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
 #include <algorithm>  // for min, max
+#include <cstddef>    // for size_t
 #include <memory>  // for __shared_ptr_access, shared_ptr, allocator_traits<>::value_type, make_shared
 #include <utility>  // for move, swap
 #include <vector>   // for vector
@@ -56,17 +59,19 @@ class Flexbox : public Node {
     requirement_.flex_grow_x = 1;
     requirement_.flex_grow_y = 0;
 
-    if (IsColumnOriented())
+    if (IsColumnOriented()) {
       std::swap(requirement_.flex_grow_x, requirement_.flex_grow_y);
+    }
   }
 
-  bool IsColumnOriented() {
+  bool IsColumnOriented() const {
     return config_.direction == FlexboxConfig::Direction::Column ||
            config_.direction == FlexboxConfig::Direction::ColumnInversed;
   }
 
   void Layout(flexbox_helper::Global& global,
               bool compute_requirement = false) {
+    global.blocks.reserve(children_.size());
     for (auto& child : children_) {
       flexbox_helper::Block block;
       block.min_size_x = child->requirement().min_x;
@@ -84,54 +89,77 @@ class Flexbox : public Node {
   }
 
   void ComputeRequirement() override {
-    for (auto& child : children_)
+    for (auto& child : children_) {
       child->ComputeRequirement();
+    }
     flexbox_helper::Global global;
     global.config = config_normalized_;
     if (IsColumnOriented()) {
-      global.size_x = 100000;
+      global.size_x = 100000;  // NOLINT
       global.size_y = asked_;
     } else {
       global.size_x = asked_;
-      global.size_y = 100000;
+      global.size_y = 100000;  // NOLINT
     }
     Layout(global, true);
 
-    if (global.blocks.size() == 0) {
-      requirement_.min_x = 0;
-      requirement_.min_y = 0;
+    // Reset:
+    requirement_.selection = Requirement::Selection::NORMAL;
+    requirement_.selected_box = Box();
+    requirement_.min_x = 0;
+    requirement_.min_y = 0;
+
+    if (global.blocks.empty()) {
       return;
     }
 
+    // Compute the union of all the blocks:
     Box box;
     box.x_min = global.blocks[0].x;
     box.y_min = global.blocks[0].y;
     box.x_max = global.blocks[0].x + global.blocks[0].dim_x;
     box.y_max = global.blocks[0].y + global.blocks[0].dim_y;
-
     for (auto& b : global.blocks) {
       box.x_min = std::min(box.x_min, b.x);
       box.y_min = std::min(box.y_min, b.y);
       box.x_max = std::max(box.x_max, b.x + b.dim_x);
       box.y_max = std::max(box.y_max, b.y + b.dim_y);
     }
-
     requirement_.min_x = box.x_max - box.x_min;
     requirement_.min_y = box.y_max - box.y_min;
+
+    // Find the selection:
+    for (size_t i = 0; i < children_.size(); ++i) {
+      if (requirement_.selection >= children_[i]->requirement().selection) {
+        continue;
+      }
+      requirement_.selection = children_[i]->requirement().selection;
+      Box selected_box = children_[i]->requirement().selected_box;
+
+      // Shift |selected_box| according to its position inside this component:
+      auto& b = global.blocks[i];
+      selected_box.x_min += b.x;
+      selected_box.y_min += b.y;
+      selected_box.x_max += b.x;
+      selected_box.y_max += b.y;
+      requirement_.selected_box = Box::Intersection(selected_box, box);
+    }
   }
 
   void SetBox(Box box) override {
     Node::SetBox(box);
 
+    const int asked_previous = asked_;
     asked_ = std::min(asked_, IsColumnOriented() ? box.y_max - box.y_min + 1
                                                  : box.x_max - box.x_min + 1);
+    need_iteration_ = (asked_ != asked_previous);
+
     flexbox_helper::Global global;
     global.config = config_;
     global.size_x = box.x_max - box.x_min + 1;
     global.size_y = box.y_max - box.y_min + 1;
     Layout(global);
 
-    need_iteration_ = false;
     for (size_t i = 0; i < children_.size(); ++i) {
       auto& child = children_[i];
       auto& b = global.blocks[i];
@@ -142,7 +170,7 @@ class Flexbox : public Node {
       children_box.x_max = box.x_min + b.x + b.dim_x - 1;
       children_box.y_max = box.y_min + b.y + b.dim_y - 1;
 
-      Box intersection = Box::Intersection(children_box, box);
+      const Box intersection = Box::Intersection(children_box, box);
       child->SetBox(intersection);
 
       need_iteration_ |= (intersection != children_box);
@@ -150,18 +178,19 @@ class Flexbox : public Node {
   }
 
   void Check(Status* status) override {
-    for (auto& child : children_)
+    for (auto& child : children_) {
       child->Check(status);
+    }
 
     if (status->iteration == 0) {
-      asked_ = 6000;
+      asked_ = 6000;  // NOLINT
       need_iteration_ = true;
     }
 
     status->need_iteration |= need_iteration_;
   }
 
-  int asked_ = 6000;
+  int asked_ = 6000;  // NOLINT
   bool need_iteration_ = true;
   const FlexboxConfig config_;
   const FlexboxConfig config_normalized_;
@@ -190,7 +219,7 @@ class Flexbox : public Node {
 //  )
 /// ```
 Element flexbox(Elements children, FlexboxConfig config) {
-  return std::make_shared<Flexbox>(std::move(children), std::move(config));
+  return std::make_shared<Flexbox>(std::move(children), config);
 }
 
 /// @brief A container displaying elements in rows from left to right. When
@@ -233,7 +262,3 @@ Element vflow(Elements children) {
 }
 
 }  // namespace ftxui
-
-// Copyright 2020 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.

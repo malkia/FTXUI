@@ -1,6 +1,8 @@
+// Copyright 2021 Arthur Sonzogni. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found in
+// the LICENSE file.
+#include <cassert>
 #include <iostream>
-//#include "ftxui/component/event.hpp"
-//#include "ftxui/component/receiver.hpp"
 #include <vector>
 #include "ftxui/component/component.hpp"
 #include "ftxui/component/terminal_input_parser.hpp"
@@ -45,6 +47,62 @@ int GeneratorInt(const char* data, size_t size) {
   return out;
 }
 
+Color GeneratorColor(const char* data, size_t size) {
+  return Color::RGB(GeneratorInt(data, size), GeneratorInt(data, size),
+                    GeneratorInt(data, size));
+}
+
+AnimatedColorOption GeneratorAnimatedColorOption(const char* data,
+                                                 size_t size) {
+  AnimatedColorOption option;
+  option.enabled = GeneratorBool(data, size);
+  option.inactive = GeneratorColor(data, size);
+  option.active = GeneratorColor(data, size);
+  option.duration = std::chrono::milliseconds(GeneratorInt(data, size));
+  return option;
+}
+
+AnimatedColorsOption GeneratorAnimatedColorsOptions(const char* data,
+                                                    size_t size) {
+  AnimatedColorsOption option;
+  option.background = GeneratorAnimatedColorOption(data, size);
+  option.foreground = GeneratorAnimatedColorOption(data, size);
+  return option;
+}
+
+ButtonOption GeneratorButtonOption(const char* data, size_t size) {
+  ButtonOption option;
+  option.animated_colors = GeneratorAnimatedColorsOptions(data, size);
+  return option;
+}
+
+UnderlineOption GeneratorUnderlineOption(const char* data, size_t size) {
+  UnderlineOption option;
+  option.enabled = GeneratorBool(data, size);
+  option.color_active = GeneratorColor(data, size);
+  option.color_inactive = GeneratorColor(data, size);
+  option.leader_duration = std::chrono::milliseconds(GeneratorInt(data, size));
+  option.follower_duration =
+      std::chrono::milliseconds(GeneratorInt(data, size));
+  option.leader_delay = std::chrono::milliseconds(GeneratorInt(data, size));
+  option.follower_delay = std::chrono::milliseconds(GeneratorInt(data, size));
+  return option;
+}
+
+MenuEntryOption GeneratorMenuEntryOption(const char* data, size_t size) {
+  MenuEntryOption option;
+  option.animated_colors = GeneratorAnimatedColorsOptions(data, size);
+  return option;
+}
+
+MenuOption GeneratorMenuOption(const char* data, size_t size) {
+  MenuOption option;
+  option.underline = GeneratorUnderlineOption(data, size);
+  option.entries_option = GeneratorMenuEntryOption(data, size);
+  option.direction = static_cast<Direction>(GeneratorInt(data, size) % 4);
+  return option;
+}
+
 bool g_bool;
 int g_int;
 std::vector<std::string> g_list;
@@ -57,13 +115,19 @@ Component GeneratorComponent(const char*& data, size_t& size, int depth) {
   if (depth <= 0)
     return Button(GeneratorString(data, size), [] {});
 
-  switch (value % 19) {
+  constexpr int value_max = 19;
+  value = (value % value_max + value_max) % value_max;
+  switch (value) {
+    case 0:
+      return Button(
+          GeneratorString(data, size), [] {},
+          GeneratorButtonOption(data, size));
     case 1:
       return Checkbox(GeneratorString(data, size), &g_bool);
     case 2:
       return Input(GeneratorString(data, size), GeneratorString(data, size));
     case 3:
-      return Menu(&g_list, &g_int);
+      return Menu(&g_list, &g_int, GeneratorMenuOption(data, size));
     case 4:
       return Radiobox(&g_list, &g_int);
     case 5:
@@ -106,8 +170,12 @@ Component GeneratorComponent(const char*& data, size_t& size, int depth) {
       return Maybe(GeneratorComponent(data, size, depth - 1), &g_bool);
     case 17:
       return Dropdown(&g_list, &g_int);
+    case 18:
+      return Collapsible(GeneratorString(data, size),
+                         GeneratorComponent(data, size, depth - 1),
+                         GeneratorBool(data, size));
     default:
-      return Button(GeneratorString(data, size), [] {});
+      assert(false);
   }
 }
 
@@ -144,22 +212,18 @@ extern "C" int LLVMFuzzerTestOneInput(const char* data, size_t size) {
   auto screen =
       Screen::Create(Dimension::Fixed(width), Dimension::Fixed(height));
 
-  auto event_receiver = MakeReceiver<Event>();
+  auto event_receiver = MakeReceiver<Task>();
   {
     auto parser = TerminalInputParser(event_receiver->MakeSender());
     for (size_t i = 0; i < size; ++i)
       parser.Add(data[i]);
   }
 
-  Event event;
+  Task event;
   while (event_receiver->Receive(&event)) {
-    component->OnEvent(event);
+    component->OnEvent(std::get<Event>(event));
     auto document = component->Render();
     Render(screen, document);
   }
   return 0;  // Non-zero return values are reserved for future use.
 }
-
-// Copyright 2021 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
