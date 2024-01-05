@@ -20,19 +20,18 @@ namespace ftxui {
 TEST(InputTest, Init) {
   std::string content;
   int cursor_position = 0;
-  auto option = InputOption();
-  Component input = Input(&content, {
-                                        .cursor_position = &cursor_position,
-                                    });
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  Component input = Input(&content, option);
   EXPECT_EQ(cursor_position, 0);
 }
 
 TEST(InputTest, Type) {
   std::string content;
   int cursor_position = 0;
-  Component input = Input(&content, {
-                                        .cursor_position = &cursor_position,
-                                    });
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  Component input = Input(&content, option);
 
   input->OnEvent(Event::Character("a"));
   EXPECT_EQ(content, "a");
@@ -63,9 +62,9 @@ TEST(InputTest, Type) {
 TEST(InputTest, ArrowLeftRight) {
   std::string content = "abc测测a测\na测\n";
   int cursor_position = 0;
-  Component input = Input(&content, {
-                                        .cursor_position = &cursor_position,
-                                    });
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  Component input = Input(&content, option);
   EXPECT_EQ(cursor_position, 0);
 
   EXPECT_FALSE(input->OnEvent(Event::ArrowLeft));
@@ -127,9 +126,9 @@ TEST(InputTest, ArrowUpDown) {
       "０\n"
       "";
   int cursor_position = 0;
-  Component input = Input(&content, {
-                                        .cursor_position = &cursor_position,
-                                    });
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  Component input = Input(&content, option);
 
   EXPECT_TRUE(input->OnEvent(Event::ArrowDown));
   EXPECT_EQ(cursor_position, 4);
@@ -192,9 +191,9 @@ TEST(InputTest, ArrowUpDown) {
 TEST(InputTest, Insert) {
   std::string content;
   int cursor_position = 0;
-  Component input = Input(&content, {
-                                        .cursor_position = &cursor_position,
-                                    });
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  Component input = Input(&content, option);
 
   EXPECT_TRUE(input->OnEvent(Event::Character('a')));
   EXPECT_TRUE(input->OnEvent(Event::Character('b')));
@@ -228,9 +227,9 @@ TEST(InputTest, Insert) {
 TEST(InputTest, Home) {
   std::string content;
   int cursor_position = 0;
-  Component input = Input(&content, {
-                                        .cursor_position = &cursor_position,
-                                    });
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  Component input = Input(&content, option);
 
   EXPECT_TRUE(input->OnEvent(Event::Character('a')));
   EXPECT_TRUE(input->OnEvent(Event::Character('b')));
@@ -253,9 +252,9 @@ TEST(InputTest, Home) {
 TEST(InputTest, End) {
   std::string content;
   int cursor_position = 0;
-  Component input = Input(&content, {
-                                        .cursor_position = &cursor_position,
-                                    });
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  Component input = Input(&content, option);
 
   EXPECT_TRUE(input->OnEvent(Event::Character('a')));
   EXPECT_TRUE(input->OnEvent(Event::Character('b')));
@@ -276,10 +275,9 @@ TEST(InputTest, End) {
 TEST(InputTest, Delete) {
   std::string content;
   int cursor_position = 0;
-  auto input = Input(&content, {
-                                   .cursor_position = &cursor_position,
-                               });
-
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  auto input = Input(&content, option);
   EXPECT_TRUE(input->OnEvent(Event::Character('a')));
   EXPECT_TRUE(input->OnEvent(Event::Character('b')));
   EXPECT_TRUE(input->OnEvent(Event::Character('c')));
@@ -337,9 +335,9 @@ TEST(InputTest, Delete) {
 TEST(InputTest, Backspace) {
   std::string content;
   int cursor_position = 0;
-  auto input = Input(&content, {
-                                   .cursor_position = &cursor_position,
-                               });
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  auto input = Input(&content, option);
 
   EXPECT_TRUE(input->OnEvent(Event::Character('a')));
   EXPECT_TRUE(input->OnEvent(Event::Character('b')));
@@ -397,9 +395,9 @@ TEST(InputTest, CtrlArrow) {
       "coucou    coucou coucou\n"
       "coucou coucou coucou\n";
   int cursor_position = 1000;
-  auto input = Input(&content, {
-                                   .cursor_position = &cursor_position,
-                               });
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  auto input = Input(&content, option);
 
   // Use CTRL+Left several time
   EXPECT_TRUE(input->OnEvent(Event::ArrowLeftCtrl));
@@ -475,9 +473,9 @@ TEST(InputTest, CtrlArrow) {
 TEST(InputTest, CtrlArrowLeft2) {
   std::string content = "   word  word  测ord  wo测d  word   ";
   int cursor_position = 33;
-  auto input = Input(&content, {
-                                   .cursor_position = &cursor_position,
-                               });
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  auto input = Input(&content, option);
 
   // Use CTRL+Left several time
   EXPECT_TRUE(input->OnEvent(Event::ArrowLeftCtrl));
@@ -507,8 +505,9 @@ TEST(InputTest, CtrlArrowRight) {
       "word word 测ord wo测d word\n"
       "coucou dfqdsf jmlkjm";
   int cursor_position = 2;
-  auto input = Input(&content, {.cursor_position = &cursor_position});
-
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  auto input = Input(&content, option);
   // Use CTRL+Left several time
   EXPECT_TRUE(input->OnEvent(Event::ArrowRightCtrl));
   EXPECT_EQ(cursor_position, 4);
@@ -541,7 +540,9 @@ TEST(InputTest, CtrlArrowRight) {
 TEST(InputTest, CtrlArrowRight2) {
   std::string content = "   word  word  测ord  wo测d  word   ";
   int cursor_position = 0;
-  auto input = Input(&content, {.cursor_position = &cursor_position});
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  auto input = Input(&content, option);
 
   // Use CTRL+Left several time
   EXPECT_TRUE(input->OnEvent(Event::ArrowRightCtrl));
@@ -570,11 +571,10 @@ TEST(InputTest, TypePassword) {
   std::string content;
   std::string placeholder;
   int cursor_position = 0;
-  Component input = Input(&content, &placeholder,
-                          {
-                              .password = true,
-                              .cursor_position = &cursor_position,
-                          });
+  InputOption option;
+  option.password = true;
+  option.cursor_position = &cursor_position;
+  Component input = Input(&content, option);
 
   input->OnEvent(Event::Character('a'));
   EXPECT_EQ(content, "a");
@@ -594,7 +594,9 @@ TEST(InputTest, TypePassword) {
 TEST(InputTest, MouseClick) {
   std::string content;
   int cursor_position = 0;
-  auto input = Input(&content, {.cursor_position = &cursor_position});
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  auto input = Input(&content, option);
 
   input->OnEvent(Event::Character("a"));
   input->OnEvent(Event::Character("b"));
@@ -689,7 +691,9 @@ TEST(InputTest, MouseClick) {
 TEST(InputTest, MouseClickComplex) {
   std::string content;
   int cursor_position = 0;
-  auto input = Input(&content, {.cursor_position = &cursor_position});
+  InputOption option;
+  option.cursor_position = &cursor_position;
+  auto input = Input(&content, option);
 
   input->OnEvent(Event::Character("测"));
   input->OnEvent(Event::Character("试"));
@@ -758,11 +762,11 @@ TEST(InputTest, InsertMode) {
   std::string content = "abc\nefg";
   bool insert = true;
   int cursor_position = 1;
-  Component input = Input({
-      .content = &content,
-      .insert = &insert,
-      .cursor_position = &cursor_position,
-  });
+  InputOption option;
+  option.content = &content;
+  option.insert = &insert;
+  option.cursor_position = &cursor_position;
+  Component input = Input(&content, option);
 
   EXPECT_TRUE(insert);
   EXPECT_TRUE(input->OnEvent(Event::Insert));

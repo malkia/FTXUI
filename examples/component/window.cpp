@@ -31,32 +31,32 @@ int main() {
   int window_1_width = 40;
   int window_1_height = 20;
 
-  auto window_1 = Window({
-      .inner = DummyWindowContent(),
-      .title = "First window",
-      .left = &window_1_left,
-      .top = &window_1_top,
-      .width = &window_1_width,
-      .height = &window_1_height,
-  });
+  WindowOptions options_1;
+  options_1.inner = DummyWindowContent();
+  options_1.title = "First window";
+  options_1.left = &window_1_left;
+  options_1.top = &window_1_top;
+  options_1.width = &window_1_width;
+  options_1.height = &window_1_height;
+  auto window_1 = Window(options_1);
 
-  auto window_2 = Window({
-      .inner = DummyWindowContent(),
-      .title = "My window",
-      .left = 40,
-      .top = 20,
-  });
+  WindowOptions options_2;
+  options_2.inner = DummyWindowContent();
+  options_2.title = "My window";
+  options_2.left = 40;
+  options_2.top = 20;
+  auto window_2 = Window(options_2);
 
-  auto window_3 = Window({
-      .inner = DummyWindowContent(),
-      .title = "My window",
-      .left = 60,
-      .top = 30,
-  });
+  WindowOptions options_3;
+  options_3.inner = DummyWindowContent();
+  options_3.title = "My window";
+  options_3.left = 60;
+  options_3.top = 30;
+  auto window_3 = Window(options_3);
 
-  auto window_4 = Window({
-      .inner = DummyWindowContent(),
-  });
+  WindowOptions options_4;
+  options_4.inner = DummyWindowContent();
+  auto window_4 = Window(options_4);
 
   auto window_5 = Window({});
 

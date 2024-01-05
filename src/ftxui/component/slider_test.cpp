@@ -47,13 +47,13 @@ Event MouseReleased(int x, int y) {
 
 TEST(SliderTest, Right) {
   int value = 50;
-  auto slider = Slider<int>({
-      .value = &value,
-      .min = 0,
-      .max = 100,
-      .increment = 10,
-      .direction = Direction::Right,
-  });
+  SliderOption<int> opt;
+  opt.value = &value;
+  opt.min = 0;
+  opt.max = 100;
+  opt.increment = 10;
+  opt.direction = Direction::Right;
+  auto slider = Slider<int>(opt);
   Screen screen(11, 1);
   Render(screen, slider->Render());
   EXPECT_EQ(value, 50);
@@ -71,13 +71,13 @@ TEST(SliderTest, Right) {
 
 TEST(SliderTest, Left) {
   int value = 50;
-  auto slider = Slider<int>({
-      .value = &value,
-      .min = 0,
-      .max = 100,
-      .increment = 10,
-      .direction = Direction::Left,
-  });
+  SliderOption<int> opt;
+  opt.value = &value;
+  opt.min = 0;
+  opt.max = 100;
+  opt.increment = 10;
+  opt.direction = Direction::Left;
+  auto slider = Slider<int>(opt);
   Screen screen(11, 1);
   Render(screen, slider->Render());
   EXPECT_EQ(value, 50);
@@ -95,13 +95,13 @@ TEST(SliderTest, Left) {
 
 TEST(SliderTest, Down) {
   int value = 50;
-  auto slider = Slider<int>({
-      .value = &value,
-      .min = 0,
-      .max = 100,
-      .increment = 10,
-      .direction = Direction::Down,
-  });
+  SliderOption<int> opt;
+  opt.value = &value;
+  opt.min = 0;
+  opt.max = 100;
+  opt.increment = 10;
+  opt.direction = Direction::Down;
+  auto slider = Slider<int>(opt);
   Screen screen(1, 11);
   Render(screen, slider->Render());
   EXPECT_EQ(value, 50);
@@ -119,13 +119,13 @@ TEST(SliderTest, Down) {
 
 TEST(SliderTest, Up) {
   int value = 50;
-  auto slider = Slider<int>({
-      .value = &value,
-      .min = 0,
-      .max = 100,
-      .increment = 10,
-      .direction = Direction::Up,
-  });
+  SliderOption<int> opt;
+  opt.value = &value;
+  opt.min = 0;
+  opt.max = 100;
+  opt.increment = 10;
+  opt.direction = Direction::Up;
+  auto slider = Slider<int>(opt);
   Screen screen(1, 11);
   Render(screen, slider->Render());
   EXPECT_EQ(value, 50);

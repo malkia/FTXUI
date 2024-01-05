@@ -26,11 +26,11 @@ TEST(MenuTest, RemoveEntries) {
   int focused_entry = 0;
   int selected = 0;
   std::vector<std::string> entries = {"1", "2", "3"};
-  auto menu = Menu({
-      .entries = &entries,
-      .selected = &selected,
-      .focused_entry = &focused_entry,
-  });
+  MenuOption option;
+  option.entries = &entries;
+  option.selected = &selected;
+  option.focused_entry = &focused_entry;
+  auto menu = Menu(option);
 
   EXPECT_EQ(selected, 0);
   EXPECT_EQ(focused_entry, 0);
@@ -57,7 +57,8 @@ TEST(MenuTest, DirectionDown) {
   int selected = 0;
   std::vector<std::string> entries = {"1", "2", "3"};
   MenuOption option;
-  auto menu = Menu(&entries, &selected, {.direction = Direction::Down});
+  option.direction = Direction::Down;
+  auto menu = Menu(&entries, &selected, option);
 
   Screen screen(4, 3);
   Render(screen, menu->Render());
@@ -83,7 +84,9 @@ TEST(MenuTest, DirectionDown) {
 TEST(MenuTest, DirectionsUp) {
   int selected = 0;
   std::vector<std::string> entries = {"1", "2", "3"};
-  auto menu = Menu(&entries, &selected, {.direction = Direction::Up});
+  MenuOption option;
+  option.direction = Direction::Up;
+  auto menu = Menu(&entries, &selected, option);
   Screen screen(4, 3);
   Render(screen, menu->Render());
   EXPECT_EQ(screen.ToString(),
@@ -107,7 +110,9 @@ TEST(MenuTest, DirectionsUp) {
 TEST(MenuTest, DirectionsRight) {
   int selected = 0;
   std::vector<std::string> entries = {"1", "2", "3"};
-  auto menu = Menu(&entries, &selected, {.direction = Direction::Right});
+  MenuOption option;
+  option.direction = Direction::Right;
+  auto menu = Menu(&entries, &selected, option);
   Screen screen(10, 1);
   Render(screen, menu->Render());
   EXPECT_EQ(screen.ToString(),
@@ -131,7 +136,9 @@ TEST(MenuTest, DirectionsRight) {
 TEST(MenuTest, DirectionsLeft) {
   int selected = 0;
   std::vector<std::string> entries = {"1", "2", "3"};
-  auto menu = Menu(&entries, &selected, {.direction = Direction::Left});
+  MenuOption option;
+  option.direction = Direction::Left;
+  auto menu = Menu(&entries, &selected, option);
   Screen screen(10, 1);
   Render(screen, menu->Render());
   EXPECT_EQ(screen.ToString(),
