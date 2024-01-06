@@ -268,6 +268,7 @@ CheckboxOption CheckboxOption::Simple() {
     // radiobox glyph.
     auto prefix = text(s.state ? "[X] " : "[ ] ");  // NOLINT
 #else
+#error 1
     auto prefix = text(s.state ? "▣ " : "☐ ");  // NOLINT
 #endif
     auto t = text(s.label);

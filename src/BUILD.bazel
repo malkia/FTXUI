@@ -6,6 +6,10 @@ cc_library(
     name = "screen",
     strip_include_prefix = "ftxui",
     include_prefix = "ftxui",
+    defines = select({
+        "@platforms//os:windows": ["FTXUI_MICROSOFT_TERMINAL_FALLBACK"],
+        "//conditions:default": [],
+    }),
     hdrs = glob(["ftxui/screen/*.hpp"]),
     srcs = glob(["ftxui/screen/*.cpp"], exclude=["ftxui/screen/*_test.cpp"]), 
     deps = ["//include:screen", "//include:util"],
@@ -17,13 +21,14 @@ cc_library(
     include_prefix = "ftxui",
     hdrs = glob(["ftxui/dom/*.hpp"]),
     srcs = glob(["ftxui/dom/*.cpp"], exclude=["ftxui/dom/*_test.cpp"]), 
-    deps = ["//include:dom"],
+    # Note :screen is needed here in order to propagate the preprocessor defines from above
+    deps = ["//include:dom", ":screen"],
 )
 
 cc_test(
     name = "dom_benchmarks",
     srcs = ["ftxui/dom/benchmark_test.cpp"],
-    deps = [":dom", ":screen", "@google_benchmark//:benchmark_main"],
+    deps = [":dom", "@google_benchmark//:benchmark_main"],
     # This benchmark is too slow for regular runs, hence marked as manual.
     # https://bazel.build/reference/test-encyclopedia#tag-conventions
     # manual -> don't include test target in wildcard target patterns like :..., :*, or :all
@@ -33,7 +38,7 @@ cc_test(
 cc_test(
     name = "dom_tests",
     srcs = glob(["ftxui/dom/*_test.cpp"], exclude=["ftxui/dom/benchmark_test.cpp"]),
-    deps = [":dom", ":screen", "@googletest//:gtest_main"],
+    deps = [":dom", "@googletest//:gtest_main"],
 )
 
 cc_library(
@@ -42,11 +47,11 @@ cc_library(
     include_prefix = "ftxui",
     hdrs = glob(["ftxui/component/*.hpp"]),
     srcs = glob(["ftxui/component/*.cpp"], exclude=["ftxui/component/*_test.cpp", "ftxui/component/*_fuzzer.cpp"]), 
-    deps = ["//include:component", ":dom", ":screen"],
+    deps = ["//include:component", ":dom"],
 )
 
 cc_test(
     name = "component_tests",
     srcs = glob(["ftxui/component/*_test.cpp"], exclude=["ftxui/dom/terminal_input_parser_test_fuzzer.cpp"]),
-    deps = [":component", ":dom", ":screen", "@googletest//:gtest_main"],
+    deps = [":component", "@googletest//:gtest_main"],
 )

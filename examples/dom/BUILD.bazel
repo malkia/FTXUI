@@ -10,5 +10,5 @@ cc_library(
 [cc_binary(
     name = paths.replace_extension(name, ""),
     srcs = [name],
-    deps = ["//src:dom", "//src:screen", ":color_info_sorted_2d_ipp"],
+    deps = ["//src:dom", ":color_info_sorted_2d_ipp"],
 ) for (name) in glob(["*.cpp"])]

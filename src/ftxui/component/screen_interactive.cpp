@@ -38,9 +38,6 @@
 #define NOMINMAX
 #endif
 #include <windows.h>
-#ifndef UNICODE
-#error Must be compiled in UNICODE mode
-#endif
 #else
 #include <sys/select.h>  // for select, FD_ISSET, FD_SET, FD_ZERO, fd_set, timeval
 #include <termios.h>  // for tcsetattr, termios, tcgetattr, TCSANOW, cc_t, ECHO, ICANON, VMIN, VTIME

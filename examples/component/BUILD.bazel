@@ -3,5 +3,5 @@ load("@bazel_skylib//lib:paths.bzl", "paths")
 [cc_binary(
     name = paths.replace_extension(name, ""),
     srcs = [name],
-    deps = ["//src:component", "//src:dom", "//src:screen", "//examples/dom:color_info_sorted_2d_ipp"],
+    deps = ["//src:component", "//examples/dom:color_info_sorted_2d_ipp"],
 ) for (name) in glob(["*.cpp"])]
